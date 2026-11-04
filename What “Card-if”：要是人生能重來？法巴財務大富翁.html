@@ -1,0 +1,3123 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>What “Card-if”：要是人生能重來？法巴財務大富翁</title>
+    <script src="https://cdn.tailwindcss.com/3.4.17"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/@phosphor-icons/web@2.1.1"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['"Noto Sans TC"', '-apple-system', 'BlinkMacSystemFont', '"Segoe UI"', 'Roboto', '"Microsoft JhengHei"', 'sans-serif'],
+                    },
+                    colors: {
+                        cream: {
+                            50: '#FDFBF7',
+                            100: '#F7F3EA',
+                            200: '#EFE7D6',
+                            300: '#E2D5B8',
+                        },
+                        cardif: {
+                            light: '#E6F4EF',
+                            DEFAULT: '#00915A',
+                            dark: '#006B42',
+                            accent: '#39B584'
+                        },
+                        warm: {
+                            coral: '#F28B82',
+                            amber: '#FDD663',
+                            sky: '#8AB4F8',
+                            lavender: '#C58AF9',
+                            brown: '#5C4B43'
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            background-color: #FDFBF7;
+            color: #4A3F39;
+            background-image: radial-gradient(#E2D5B8 1px, transparent 1px);
+            background-size: 24px 24px;
+            overflow-x: hidden;
+        }
+        .healing-shadow {
+            box-shadow: 0 8px 24px -4px rgba(92, 75, 67, 0.08), 0 4px 8px -2px rgba(92, 75, 67, 0.04);
+        }
+        .healing-card {
+            background: rgba(255, 255, 255, 0.92);
+            
+            border: 2px solid #EFE7D6;
+            border-radius: 1.5rem;
+        }
+        .tile-box {
+            transition: all 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+        .tile-active {
+            transform: translateY(-4px) scale(1.03);
+            box-shadow: 0 12px 20px -4px rgba(0, 145, 90, 0.25);
+            border-color: #00915A !important;
+            z-index: 10;
+        }
+        @keyframes floatSlow {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-5px); }
+        }
+        .animate-float {
+            animation: floatSlow 3s ease-in-out infinite;
+        }
+        @keyframes diceShake {
+            0% { transform: rotate(0deg) scale(1); }
+            25% { transform: rotate(-18deg) scale(1.15) translateY(-6px); }
+            50% { transform: rotate(18deg) scale(1.2) translateY(4px); }
+            75% { transform: rotate(-12deg) scale(1.12) translateY(-4px); }
+            100% { transform: rotate(0deg) scale(1); }
+        }
+        .dice-rolling {
+            animation: diceShake 0.28s infinite;
+        }
+        @keyframes popBounceIn {
+            0% { opacity: 0; transform: scale(0.65) translateY(32px); }
+            60% { opacity: 1; transform: scale(1.04) translateY(-6px); }
+            80% { opacity: 0.98; transform: scale(0.98) translateY(2px); }
+            100% { opacity: 1; transform: scale(1) translateY(0); }
+        }
+        .animate-pop-bounce {
+            animation: popBounceIn 0.55s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+        }
+        @keyframes choicePopUp {
+            0% { opacity: 0; transform: translateY(18px) scale(0.94); }
+            70% { opacity: 1; transform: translateY(-3px) scale(1.01); }
+            100% { opacity: 1; transform: translateY(0) scale(1); }
+        }
+        .animate-choice-pop {
+            opacity: 0;
+            animation: choicePopUp 0.42s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+        }
+        @keyframes diceBurst {
+            0% { transform: scale(0.4) rotate(-25deg); opacity: 0; }
+            60% { transform: scale(1.18) rotate(6deg); opacity: 1; }
+            80% { transform: scale(0.95) rotate(-2deg); }
+            100% { transform: scale(1) rotate(0deg); opacity: 1; }
+        }
+        .animate-dice-burst {
+            animation: diceBurst 0.45s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+        }
+        .board-ring-grid {
+            display: grid;
+            grid-template-columns: repeat(5, minmax(0, 1fr));
+            grid-template-rows: repeat(5, minmax(64px, auto));
+            gap: 0.375rem;
+        }
+        @media (min-width: 640px) {
+            .board-ring-grid {
+                grid-template-rows: repeat(5, minmax(78px, auto));
+                gap: 0.5rem;
+            }
+        }
+        .board-center-hub {
+            grid-column: 2 / 5;
+            grid-row: 2 / 5;
+        }
+        @keyframes stepPulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.12); box-shadow: 0 0 0 4px rgba(0, 145, 90, 0.25); }
+            100% { transform: scale(1.04); }
+        }
+        .tile-stepping {
+            animation: stepPulse 0.22s ease-out forwards;
+        }
+        .mobile-tab-active {
+            background-color: #00915A;
+            color: #FFFFFF;
+            box-shadow: 0 4px 12px rgba(0, 145, 90, 0.25);
+        }
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #F7F3EA;
+            border-radius: 8px;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #D5C5A5;
+            border-radius: 8px;
+        }
+    
+        html, body { height: 100%; }
+        body { height: 100dvh; min-height: 0 !important; overflow: hidden; display: flex; flex-direction: column; justify-content: flex-start !important; }
+        header { flex-shrink: 0; }
+        main { min-height: 0; flex: 1; display: flex; flex-direction: column; overflow: hidden; }
+        #screen-select { flex: 1; min-height: 0; overflow-y: auto; }
+        #screen-game { flex: 1; min-height: 0; display: flex; flex-direction: column; gap: .5rem; }
+        #screen-game.hidden, #screen-select.hidden { display: none; }
+        #game-grid { grid-template-rows: minmax(0, 1fr); }
+        .board-ring-grid { grid-template-rows: repeat(5, minmax(0, 1fr)) !important; height: 100%; gap: .3rem; }
+        .board-ring-grid > div { min-height: 0; overflow: hidden; }
+        @media (max-height: 820px) {
+            #intro-text, #npc-intro, .card-bio { display: none; }
+            .tile-sub { display: none !important; }
+        }
+        @media (prefers-reduced-motion: reduce) { * { animation-duration: .01ms !important; transition-duration: .01ms !important; } }
+    
+        /* ===== 配色與風格升級：暖紙質感 + 法巴綠 ===== */
+        body {
+            background-color: #FBF8F1;
+            background-image: radial-gradient(rgba(0,145,90,.07) 1px, transparent 1px), linear-gradient(180deg, #FFFDF8 0%, #F6F0E2 100%);
+            background-size: 22px 22px, 100% 100%;
+            background-attachment: fixed;
+        }
+        header {
+            background: linear-gradient(180deg, #FFFFFF 0%, #F8F3E7 100%) !important;
+            border-bottom: 1px solid #E8DCC2 !important;
+            box-shadow: 0 2px 12px -4px rgba(92,75,67,.12);
+        }
+        .healing-card {
+            background: rgba(255,255,255,.97);
+            border: 1.5px solid #EADFC8;
+            border-radius: 1.25rem;
+        }
+        .healing-shadow {
+            box-shadow: 0 1px 0 rgba(255,255,255,.9) inset, 0 10px 28px -10px rgba(92,75,67,.16), 0 2px 6px -2px rgba(92,75,67,.06);
+        }
+        .bg-cardif { background-image: linear-gradient(135deg, #0BA86C 0%, #00844F 100%); }
+        .hover\:bg-cardif-dark:hover { background-image: linear-gradient(135deg, #00905A 0%, #006B42 100%); }
+        button { transition: transform .15s ease, box-shadow .2s ease, background-color .2s ease; }
+        button:not(:disabled):active { transform: scale(.97); }
+        .bg-cardif.shadow-sm, .bg-cardif.shadow-md { box-shadow: 0 6px 14px -6px rgba(0,132,79,.55); }
+        .tile-box:not(.tile-active) { box-shadow: 0 1px 0 rgba(255,255,255,.85) inset, 0 3px 8px -4px rgba(92,75,67,.18); }
+        .board-center-hub {
+            background: radial-gradient(circle at 30% 20%, #FFFFFF 0%, #F7F1E2 70%) !important;
+            border-color: #E6D9BB !important;
+            box-shadow: inset 0 2px 10px rgba(92,75,67,.08);
+        }
+        #dialogue-banner { background-image: linear-gradient(120deg, #00844F 0%, #1FB57F 100%) !important; }
+        #dialogue-speech-box { background: linear-gradient(180deg, #FFFFFF 0%, #F3FBF7 100%); }
+        h1, h2, h3 { letter-spacing: .01em; }
+        :focus-visible { outline: 2px solid #00915A; outline-offset: 2px; border-radius: .6rem; }
+    
+        /* ===== 遊戲進行中：精簡頂部列 ===== */
+        body.playing header { padding-top: .3rem; padding-bottom: .3rem; }
+        body.playing header > div { flex-wrap: nowrap; gap: .5rem; }
+        body.playing header .w-10.h-10, body.playing header p.text-stone-500, body.playing header .bg-cardif-light { display: none; }
+        body.playing header .gap-3 { min-width: 0; flex: 1; gap: 0; }
+        body.playing header .gap-3 > div { min-width: 0; }
+        body.playing header h1 { font-size: .8rem; line-height: 1.25; margin: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        body.playing header button { padding: .3rem .55rem; font-size: .7rem; flex-shrink: 0; white-space: nowrap; }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col justify-between selection:bg-cardif-light selection:text-cardif-dark font-sans">
+
+    <header class="sticky top-0 z-30 bg-cream-50/95 backdrop-blur-md border-b border-cream-200 px-4 py-2">
+        <div class="max-w-7xl mx-auto flex flex-wrap items-center justify-between gap-3">
+            <div class="flex items-center gap-3">
+                <div class="w-10 h-10 rounded-2xl bg-cardif flex items-center justify-center text-white shadow-sm shrink-0">
+                    <i class="ph-fill ph-plant text-2xl"></i>
+                </div>
+                <div>
+                    <div class="flex flex-wrap items-center gap-2">
+                        <span class="text-xs px-2.5 py-0.5 rounded-full bg-cardif-light text-cardif-dark font-medium">法國巴黎人壽</span>
+                        <span id="header-round-badge" class="hidden text-xs px-2.5 py-0.5 rounded-full bg-amber-100 text-amber-800 font-bold">回合 1 / 12</span>
+                    </div>
+                    <h1 class="text-base sm:text-lg font-bold text-warm-brown mt-0.5">What “Card-if”：要是人生能重來？法巴財務大富翁</h1>
+                    <p class="text-[11px] sm:text-xs text-stone-500 leading-snug mt-0.5">法巴 Cardif 財務大富翁：4 種人生 × 關鍵對話，選出你的致勝結局</p>
+                </div>
+            </div>
+
+            <div class="flex items-center gap-2">
+                <button onclick="openGuideModal()" class="flex items-center gap-1.5 px-3 py-2 rounded-xl bg-cream-100 hover:bg-cream-200 text-warm-brown text-xs sm:text-sm font-medium transition">
+                    <i class="ph-duotone ph-book-open-text text-base sm:text-lg text-cardif"></i>
+                    <span>遊戲百科</span>
+                </button>
+                <button id="btn-restart-top" onclick="resetToCharacterSelect()" class="hidden items-center gap-1.5 px-3 py-2 rounded-xl bg-rose-50 hover:bg-rose-100 text-rose-700 text-xs sm:text-sm font-medium transition">
+                    <i class="ph-bold ph-arrows-counter-clockwise"></i>
+                    <span>重選角色</span>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <main class="max-w-7xl w-full mx-auto px-3 sm:px-5 py-2 sm:py-3">
+        
+        <!-- Character Selection Screen -->
+        <section id="screen-select" class="space-y-3 py-1">
+            <div class="healing-card healing-shadow p-6 sm:p-8 text-center relative overflow-hidden !p-4">
+                <div class="max-w-3xl mx-auto space-y-4 relative z-10">
+                    <span class="inline-flex items-center gap-1.5 px-3.5 py-1 rounded-full bg-emerald-50 text-cardif text-xs sm:text-sm font-medium border border-emerald-200">
+                        <i class="ph-fill ph-sparkle"></i> 療癒系沈浸式人生沙盤
+                    </span>
+                    <h2 class="text-xl sm:text-2xl font-bold text-warm-brown leading-snug">
+                        在充滿未知的人生步道上，誰來守護你的財富與摯愛？
+                    </h2>
+                    <p id="intro-text" class="text-sm text-stone-600 leading-relaxed">
+                        選擇一位處於不同人生階段的主角（每位主角擁有專屬 3D 立體風格髮型與量身打造的機會命運事件），與專屬財務管家<strong class="text-cardif-dark font-bold">「陸修遠」</strong>及人生伴侶/摯友<strong class="text-amber-700 font-bold">「江禾」</strong>展開深度的劇情互動。透過法國巴黎人壽的<strong class="font-bold">投資型保單</strong>與<strong class="font-bold">房貸壽險</strong>配置，抵禦黑天鵝風暴，每回合準時發薪並清償負債，邁向 S 級「財務自由，歲月靜好」結局！
+                    </p>
+                </div>
+            </div>
+
+            <div id="npc-intro" class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                <div class="healing-card p-5 flex items-start sm:items-center gap-4 border-l-4 border-l-cardif">
+                    <div id="preview-npc-lu" class="w-16 h-16 shrink-0 rounded-2xl bg-emerald-50 p-1.5 border border-emerald-200 flex items-center justify-center"></div>
+                    <div class="space-y-1.5">
+                        <div class="flex flex-wrap items-center gap-2">
+                            <h3 class="font-bold text-base text-warm-brown">陸修遠</h3>
+                            <span class="text-xs px-2.5 py-0.5 rounded-full bg-cardif-light text-cardif-dark font-medium">法巴專屬財務管家 / 保險顧問</span>
+                        </div>
+                        <p class="text-xs sm:text-sm text-stone-600 leading-relaxed">
+                            溫柔沉穩的守護者。在「法巴理財中心」或遭遇危機時現身。好感度高時享有<strong>保費折扣</strong>與免費財務重組建議！
+                        </p>
+                    </div>
+                </div>
+                <div class="healing-card p-5 flex items-start sm:items-center gap-4 border-l-4 border-l-amber-400">
+                    <div id="preview-npc-jiang" class="w-16 h-16 shrink-0 rounded-2xl bg-amber-50 p-1.5 border border-amber-200 flex items-center justify-center"></div>
+                    <div class="space-y-1.5">
+                        <div class="flex flex-wrap items-center gap-2">
+                            <h3 class="font-bold text-base text-warm-brown">江禾</h3>
+                            <span class="text-xs px-2.5 py-0.5 rounded-full bg-amber-100 text-amber-800 font-medium">伴侶 / 摯友 / 人生同行者</span>
+                        </div>
+                        <p class="text-xs sm:text-sm text-stone-600 leading-relaxed">
+                            陪伴你走過悲歡離合的重要之人。若你有完善保障度過難關，羈絆將更加深厚；若無保障拖累彼此，或屢次向其借貸，關係將面臨破裂危機。
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="space-y-4">
+                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+                    <h3 class="text-base sm:text-lg font-bold text-warm-brown flex items-center gap-2">
+                        <i class="ph-fill ph-users-four text-cardif text-lg"></i>
+                        請選擇你要體驗的人生角色卡
+                    </h3>
+                    <span class="text-xs text-stone-500">角色 3D 立體風格頭像與專屬髮型將隨劇情即時轉換</span>
+                </div>
+                <div id="character-cards-container" class="grid grid-cols-2 lg:grid-cols-4 gap-3">
+                </div>
+            </div>
+        </section>
+
+        <!-- Main Game Screen -->
+        <section id="screen-game" class="hidden">
+            
+            <!-- Mobile Mini Navigation & Stats -->
+            <div class="lg:hidden space-y-2 shrink-0">
+                <div class="healing-card p-4 flex items-center justify-between gap-3">
+                    <div class="flex items-center gap-3">
+                        <div id="mobile-mini-avatar" class="w-12 h-12 rounded-2xl bg-cream-100 border border-cream-300 p-1 shrink-0"></div>
+                        <div>
+                            <div class="flex items-center gap-2">
+                                <span id="mobile-mini-name" class="font-bold text-sm text-warm-brown">林小葵</span>
+                                <span id="mobile-mini-mood" class="text-xs px-2 py-0.5 rounded-full bg-cream-100 text-stone-600">😊 愉悅</span>
+                            </div>
+                            <div class="text-xs text-stone-500 mt-0.5 flex flex-wrap items-center gap-x-2 gap-y-0.5">
+                                <span>現金：<strong id="mobile-mini-cash" class="text-emerald-700 font-bold">$45,000</strong></span>
+                                <span>·</span>
+                                <span>滿意度：<strong id="mobile-mini-san" class="text-rose-600 font-bold">85</strong></span>
+                                <span>·</span>
+                                <span>防護：<strong id="mobile-mini-def" class="text-cardif-dark font-bold">0%</strong></span>
+                            </div>
+                        </div>
+                    </div>
+                    <button onclick="openInsuranceShop(false)" class="px-3.5 py-2 rounded-xl bg-cardif text-white text-xs font-medium shadow-sm shrink-0 flex items-center gap-1">
+                        <i class="ph-bold ph-shield-plus"></i> 投保/理財
+                    </button>
+                </div>
+
+                <div class="grid grid-cols-3 gap-2 bg-cream-100 p-1.5 rounded-2xl border border-cream-200">
+                    <button id="tab-btn-board" onclick="switchMobileView('board')" class="mobile-tab-active py-2.5 px-3 rounded-xl text-xs font-medium transition flex items-center justify-center gap-1.5">
+                        <i class="ph-fill ph-dice-five text-base"></i> 人生步道
+                    </button>
+                    <button id="tab-btn-char" onclick="switchMobileView('char')" class="text-warm-brown py-2.5 px-3 rounded-xl text-xs font-medium transition flex items-center justify-center gap-1.5">
+                        <i class="ph-fill ph-identification-card text-base"></i> 角色與NPC
+                    </button>
+                    <button id="tab-btn-cardif" onclick="switchMobileView('cardif')" class="text-warm-brown py-2.5 px-3 rounded-xl text-xs font-medium transition flex items-center justify-center gap-1.5">
+                        <i class="ph-fill ph-shield-check text-base"></i> 保單組合
+                    </button>
+                </div>
+            </div>
+
+            <!-- 3-Column Grid Layout (Desktop) / Tab Panes (Mobile) -->
+            <div id="game-grid" class="grid grid-cols-1 lg:grid-cols-12 gap-3 lg:gap-4 items-stretch flex-1 min-h-0">
+                
+                <!-- Left Column: Character & NPC Status -->
+                <div id="panel-char" class="hidden lg:block lg:col-span-4 space-y-3 h-full min-h-0 overflow-y-auto pr-1">
+                    <div class="healing-card healing-shadow p-4 relative overflow-hidden">
+                        <div class="flex flex-wrap items-center justify-between gap-2 mb-3">
+                            <span id="player-stage-tag" class="text-xs px-3 py-1 rounded-full bg-emerald-100 text-emerald-800 font-medium">24 歲 · 小資新鮮人</span>
+                            <span id="player-job-badge" class="text-xs px-3 py-1 rounded-full bg-sky-100 text-sky-800 font-medium flex items-center gap-1">
+                                <i class="ph-fill ph-briefcase"></i> 在職中
+                            </span>
+                        </div>
+
+                        <div class="relative mx-auto w-24 h-24 rounded-3xl bg-gradient-to-b from-cream-100 to-cream-200 border-2 border-cream-300 flex items-center justify-center shadow-inner mb-3">
+                            <div id="player-avatar-svg" class="w-20 h-20"></div>
+                            <div id="player-expression-pill" class="absolute -bottom-2.5 px-3.5 py-0.5 rounded-full bg-white border border-cream-300 text-xs font-medium text-warm-brown shadow-sm">
+                                😊 充滿幹勁
+                            </div>
+                        </div>
+
+                        <div class="text-center mt-4 mb-3 space-y-1">
+                            <h3 id="player-name-title" class="text-lg font-bold text-warm-brown">林小葵</h3>
+                            <p id="player-goal-text" class="text-xs text-stone-500 leading-relaxed">核心目標：累積第一桶金，避免一次意外破產</p>
+                        </div>
+
+                        <div class="space-y-2 bg-cream-50 p-3 rounded-2xl border border-cream-200 text-sm">
+                            <div class="flex justify-between items-center">
+                                <span class="text-stone-600 flex items-center gap-2"><i class="ph-fill ph-coins text-amber-500 text-base"></i> 現金與投資</span>
+                                <span id="stat-cash" class="font-bold text-base text-emerald-700">$50,000</span>
+                            </div>
+                            <div class="flex justify-between items-center">
+                                <span class="text-stone-600 flex items-center gap-2"><i class="ph-fill ph-bank text-rose-400 text-base"></i> 貸款/房貸/借款總計</span>
+                                <span id="stat-debt" class="font-bold text-base text-rose-600">$300,000</span>
+                            </div>
+                            <div class="flex justify-between items-center">
+                                <span class="text-stone-600 flex items-center gap-2"><i class="ph-fill ph-shooting-star text-cardif text-base"></i> 保單帳戶價值</span>
+                                <span id="stat-policy-val" class="font-bold text-base text-cardif-dark">$0</span>
+                            </div>
+                            <div class="pt-3 border-t border-cream-200 flex justify-between items-center">
+                                <span class="text-stone-700 font-medium">每圈淨現金流</span>
+                                <span id="stat-cashflow" class="font-bold text-sky-700">+$12,000 /圈</span>
+                            </div>
+                        </div>
+
+                        <div class="mt-3 space-y-1.5">
+                            <div class="flex justify-between items-center text-xs font-medium">
+                                <span class="flex items-center gap-1.5 text-warm-brown">
+                                    <i class="ph-fill ph-heart text-rose-500"></i> 生活滿意度 (San值)
+                                    <span id="san-status-badge" class="text-[11px] px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800 font-bold">身心平衡</span>
+                                </span>
+                                <div class="flex items-center gap-1.5">
+                                    <span id="san-delta-badge" class="hidden text-xs font-bold px-1.5 py-0.5 rounded-md"></span>
+                                    <span id="stat-san-text" class="font-bold">85 / 100</span>
+                                </div>
+                            </div>
+                            <div class="w-full h-3 bg-cream-200 rounded-full overflow-hidden p-0.5">
+                                <div id="stat-san-bar" class="h-full rounded-full bg-gradient-to-r from-emerald-400 to-cardif transition-all duration-500" style="width: 85%"></div>
+                            </div>
+                            <p id="san-desc-hint" class="text-[11px] text-stone-500">隨財務安全感、突發壓力與伴侶關係即時起伏</p>
+                        </div>
+                    </div>
+
+                    <div class="healing-card healing-shadow p-4 space-y-3">
+                        <div class="flex items-center justify-between">
+                            <h4 class="text-sm font-bold text-warm-brown">NPC 羈絆與表情狀態</h4>
+                            <span class="text-xs text-cardif font-medium">影響保費折扣與結局</span>
+                        </div>
+
+                        <div class="p-3.5 rounded-2xl bg-emerald-50/60 border border-emerald-100 flex items-center gap-3.5 relative">
+                            <div id="game-npc-lu-avatar" class="w-14 h-14 rounded-2xl bg-white border border-emerald-200 shrink-0 p-1"></div>
+                            <div class="flex-1 min-w-0 space-y-1">
+                                <div class="flex justify-between items-center">
+                                    <span class="font-bold text-sm text-warm-brown">陸修遠 <small class="text-xs text-cardif-dark font-normal">財務管家</small></span>
+                                    <div class="flex items-center gap-1">
+                                        <span id="lu-delta-badge" class="hidden absolute top-3 right-3 text-xs font-bold px-2 py-0.5 rounded-md shadow-sm"></span>
+                                        <span id="stat-lu-score" class="text-xs font-bold text-cardif-dark">60 ♥</span>
+                                    </div>
+                                </div>
+                                <div class="w-full h-2 bg-emerald-100 rounded-full overflow-hidden">
+                                    <div id="stat-lu-bar" class="h-full bg-cardif transition-all duration-500" style="width: 60%"></div>
+                                </div>
+                                <p id="stat-lu-perk" class="text-xs text-stone-600 leading-snug">好感 ≥75 享保費 85 折；過低將加收諮詢費</p>
+                            </div>
+                        </div>
+
+                        <div class="p-3.5 rounded-2xl bg-amber-50/60 border border-amber-100 flex items-center gap-3.5 relative">
+                            <div id="game-npc-jiang-avatar" class="w-14 h-14 rounded-2xl bg-white border border-amber-200 shrink-0 p-1"></div>
+                            <div class="flex-1 min-w-0 space-y-1">
+                                <div class="flex justify-between items-center">
+                                    <span class="font-bold text-sm text-warm-brown">江禾 <small id="jiang-role-label" class="text-xs text-amber-800 font-normal">摯友/伴侶</small></span>
+                                    <div class="flex items-center gap-1">
+                                        <span id="jiang-delta-badge" class="hidden absolute top-3 right-3 text-xs font-bold px-2 py-0.5 rounded-md shadow-sm"></span>
+                                        <span id="stat-jiang-score" class="text-xs font-bold text-amber-700">65 ♥</span>
+                                    </div>
+                                </div>
+                                <div class="w-full h-2 bg-amber-100 rounded-full overflow-hidden">
+                                    <div id="stat-jiang-bar" class="h-full bg-amber-500 transition-all duration-500" style="width: 65%"></div>
+                                </div>
+                                <p id="stat-jiang-perk" class="text-xs text-stone-600 leading-snug">患難見真情，低於 35 將觸發關係破裂扣分</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Center Column: Monopoly Ring Board -->
+                <div id="panel-board" class="flex flex-col gap-3 lg:col-span-5 h-full min-h-0">
+                    <div class="healing-card healing-shadow p-2.5 sm:p-4 flex flex-col gap-2 flex-1 min-h-0">
+                        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pb-2 border-b border-cream-200 shrink-0">
+                            <div class="flex items-center gap-2">
+                                <span class="w-2.5 h-2.5 rounded-full bg-cardif shrink-0"></span>
+                                <span id="board-age-display" class="font-bold text-warm-brown text-sm">當前年齡：24 歲（第 1 / 12 回合）</span>
+                            </div>
+                            <div class="flex items-center">
+                                <span id="black-swan-warning" class="px-2.5 py-1 rounded-full bg-amber-100 text-amber-800 text-[11px] font-medium flex items-center gap-1">
+                                    <i class="ph-fill ph-warning-circle"></i> 專屬劇情事件將於第 5 回合降臨
+                                </span>
+                            </div>
+                        </div>
+
+                        <div class="flex-1 min-h-0 flex flex-col">
+                            <div class="flex items-center justify-between text-[11px] text-stone-500 mb-1 px-1 shrink-0">
+                                <span>🔄 16 格環狀人生步道（經過起點領薪並償還貸款）</span>
+                                <span class="text-cardif-dark font-bold">📍 綠框為目前位置</span>
+                            </div>
+                            <div id="monopoly-grid" class="board-ring-grid">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="healing-card p-3 space-y-2 shrink-0">
+                        <div class="flex items-center justify-between">
+                            <h4 class="text-sm font-bold text-warm-brown flex items-center gap-1.5">
+                                <i class="ph-fill ph-scroll text-cardif text-base"></i> 人生足跡日誌
+                            </h4>
+                            <span class="text-xs text-stone-400">即時記錄收支、保單與發薪還款</span>
+                        </div>
+                        <div id="game-log-list" class="h-16 sm:h-24 overflow-y-auto space-y-2 text-xs pr-1">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Right Column: Cardif Insurance & Policies -->
+                <div id="panel-cardif" class="hidden lg:block lg:col-span-3 space-y-3 h-full min-h-0 overflow-y-auto pr-1">
+                    <div class="healing-card healing-shadow p-4 space-y-3 border-t-4 border-t-cardif">
+                        <div class="flex items-center justify-between gap-2">
+                            <div>
+                                <span class="text-xs text-cardif font-medium block">BNP Paribas Cardif</span>
+                                <h4 class="font-bold text-warm-brown text-base mt-0.5">已配置保障與理財</h4>
+                            </div>
+                            <button onclick="openInsuranceShop(false)" class="px-3.5 py-2 rounded-xl bg-cardif text-white text-xs font-medium hover:bg-cardif-dark transition shadow-sm flex items-center gap-1 shrink-0">
+                                <i class="ph-bold ph-plus-circle"></i> 投保規劃
+                            </button>
+                        </div>
+
+                        <div class="p-4 rounded-2xl bg-cardif-light/60 border border-cardif/20 space-y-2">
+                            <div class="flex justify-between items-center text-xs">
+                                <span class="font-medium text-cardif-dark flex items-center gap-1.5">
+                                    <i class="ph-fill ph-shield-check text-base"></i> 風險防護力指標
+                                </span>
+                                <span id="stat-defense-pct" class="font-bold text-cardif-dark">0%</span>
+                            </div>
+                            <div class="w-full h-2.5 bg-white rounded-full overflow-hidden">
+                                <div id="stat-defense-bar" class="h-full bg-cardif transition-all duration-500" style="width: 0%"></div>
+                            </div>
+                            <p class="text-xs text-stone-600 leading-relaxed">防護力 &gt; 80% 是達成 S 級結局的關鍵條件！</p>
+                        </div>
+
+                        <div id="active-policies-list" class="space-y-2.5 max-h-40 overflow-y-auto pr-1">
+                        </div>
+
+                        <div class="pt-3 border-t border-cream-200 space-y-2.5">
+                            <button onclick="openRepayDialog()" class="w-full py-3 px-4 rounded-xl bg-rose-50 hover:bg-rose-100 text-rose-700 border border-rose-200 text-xs font-medium transition flex items-center justify-center gap-2">
+                                <i class="ph-fill ph-bank text-lg"></i>
+                                <span>提前還款（降低負債）</span>
+                            </button>
+                            <button onclick="triggerAdvisorConsult()" class="w-full py-3 px-4 rounded-xl bg-cream-100 hover:bg-cream-200 text-warm-brown text-xs font-medium transition flex items-center justify-center gap-2">
+                                <i class="ph-duotone ph-chats-circle text-lg text-cardif"></i>
+                                <span>向陸修遠諮詢階段建議</span>
+                            </button>
+                            <button onclick="triggerSpecialCrisisNow()" id="btn-trigger-story" class="w-full py-2.5 px-4 rounded-xl bg-amber-50 hover:bg-amber-100 text-amber-800 border border-amber-200 text-xs font-medium transition flex items-center justify-center gap-2">
+                                <i class="ph-fill ph-lightning text-amber-600"></i>
+                                <span>立即體驗角色專屬事件</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="healing-card p-4 space-y-2 text-xs">
+                        <h4 class="font-bold text-warm-brown flex items-center gap-1.5">
+                            <i class="ph-fill ph-medal text-amber-500 text-base"></i> 結局評級預覽
+                        </h4>
+                        <div class="space-y-2 text-stone-600">
+                            <div class="flex items-center justify-between">
+                                <span class="font-medium text-emerald-700">🌟 S 级：歲月靜好</span>
+                                <span class="text-[11px]">防護&gt;80% + 高好感</span>
+                            </div>
+                            <div class="flex items-center justify-between">
+                                <span class="font-medium text-sky-700">🍀 A 级：平安落地</span>
+                                <span class="text-[11px]">資產為正 + 無破產</span>
+                            </div>
+                            <div class="flex items-center justify-between">
+                                <span class="font-medium text-rose-600">⚡ F 级：風險爆雷</span>
+                                <span class="text-[11px]">破產或關係破裂</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+    </main>
+
+    <div id="dice-overlay" class="fixed inset-0 z-50 hidden items-center justify-center bg-stone-900/45 backdrop-blur-sm p-4">
+        <div id="dice-overlay-card" class="healing-card healing-shadow p-6 sm:p-8 max-w-xs w-full text-center space-y-4 border-2 border-cardif animate-pop-bounce">
+            <div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-cardif-light text-cardif-dark text-xs font-bold">
+                <i class="ph-fill ph-sparkle"></i> 命運之骰轉動中
+            </div>
+            <div id="dice-overlay-box" class="w-28 h-28 mx-auto rounded-3xl bg-white border-4 border-cardif shadow-lg flex items-center justify-center p-3">
+            </div>
+            <div class="space-y-1">
+                <h4 id="dice-overlay-title" class="text-lg font-bold text-warm-brown">擲骰子中...</h4>
+                <p id="dice-overlay-sub" class="text-xs text-stone-500">看看這回合會踏上哪個人生步道</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Notification Modal for Payday & Debt Repayment -->
+    <div id="modal-notification" class="fixed inset-0 z-50 hidden items-center justify-center bg-stone-900/50 backdrop-blur-sm p-4">
+        <div class="healing-card healing-shadow max-w-md w-full p-6 text-center space-y-4 border-2 border-cardif animate-pop-bounce">
+            <div id="notif-icon-wrap" class="w-16 h-16 mx-auto rounded-2xl bg-emerald-100 text-emerald-700 flex items-center justify-center text-3xl shadow-sm">
+                <i class="ph-fill ph-coins"></i>
+            </div>
+            <div class="space-y-1">
+                <h3 id="notif-title" class="text-lg font-bold text-warm-brown">財務動態通知</h3>
+                <p id="notif-message" class="text-xs sm:text-sm text-stone-600 leading-relaxed whitespace-pre-line"></p>
+            </div>
+            <button onclick="closeNotificationModal()" class="w-full py-2.5 rounded-xl bg-cardif hover:bg-cardif-dark text-white font-bold text-xs transition shadow-sm">
+                確定了解
+            </button>
+        </div>
+    </div>
+
+    <div id="modal-dialogue" class="fixed inset-0 z-50 hidden items-center justify-center bg-stone-900/50 backdrop-blur-sm p-3 sm:p-4">
+        <div id="modal-dialogue-card" class="healing-card healing-shadow max-w-2xl w-full max-h-[92vh] flex flex-col overflow-hidden border-2 border-cream-300">
+            <div id="dialogue-banner" class="px-5 py-3.5 bg-gradient-to-r from-cardif to-emerald-600 text-white flex items-center justify-between shrink-0">
+                <div class="flex items-center gap-2">
+                    <i id="dialogue-icon" class="ph-fill ph-sparkle text-lg"></i>
+                    <span id="dialogue-category" class="text-xs sm:text-sm font-medium">角色專屬劇情事件</span>
+                </div>
+                <span id="dialogue-location-tag" class="text-xs bg-white/20 px-2.5 py-0.5 rounded-full font-medium">大富翁步道</span>
+            </div>
+
+            <div class="p-5 sm:p-6 bg-cream-50 space-y-5 overflow-y-auto">
+                <div class="flex items-center justify-around gap-3 bg-white p-4 rounded-2xl border border-cream-200 shadow-inner">
+                    <div id="modal-player-box" class="flex flex-col items-center text-center">
+                        <div id="modal-player-avatar" class="w-16 h-16 sm:w-20 sm:h-20 rounded-2xl bg-cream-100 border border-cream-300 p-1"></div>
+                        <span id="modal-player-name" class="text-xs sm:text-sm font-bold text-warm-brown mt-2">主角</span>
+                        <span id="modal-player-mood" class="text-xs px-2.5 py-0.5 rounded-full bg-cream-100 text-stone-600 mt-1">😮 驚訝</span>
+                    </div>
+
+                    <div class="flex flex-col items-center text-stone-400">
+                        <i class="ph-duotone ph-chats-teardrop text-2xl sm:text-3xl text-cardif animate-bounce"></i>
+                        <span class="text-[10px] font-medium tracking-wider uppercase mt-1">互動對話</span>
+                    </div>
+
+                    <div id="modal-npc-container" class="flex flex-col items-center text-center">
+                        <div id="modal-npc-avatar" class="w-16 h-16 sm:w-20 sm:h-20 rounded-2xl bg-emerald-50 border border-emerald-200 p-1"></div>
+                        <span id="modal-npc-name" class="text-xs sm:text-sm font-bold text-warm-brown mt-2">陸修遠</span>
+                        <span id="modal-npc-mood" class="text-xs px-2.5 py-0.5 rounded-full bg-emerald-50 text-cardif-dark mt-1">😊 溫和微笑</span>
+                    </div>
+                </div>
+
+                <div id="dialogue-context-wrap" class="space-y-2.5">
+                    <h3 id="dialogue-title" class="text-base sm:text-lg font-bold text-warm-brown leading-snug">事件標題</h3>
+                    <p id="dialogue-context" class="text-xs sm:text-sm text-stone-600 leading-relaxed bg-cream-100/70 p-4 rounded-xl border border-cream-200"></p>
+                </div>
+
+                <div id="dialogue-speech-box" class="relative bg-white p-4 sm:p-5 rounded-2xl border-2 border-cardif/30 shadow-md">
+                    <div class="flex items-center justify-between mb-1.5">
+                        <div class="text-xs font-bold text-cardif-dark flex items-center gap-1.5">
+                            <i class="ph-fill ph-chat-circle-dots text-base"></i>
+                            <span id="dialogue-speaker-label">陸修遠 說：</span>
+                        </div>
+                    </div>
+                    <p id="dialogue-speech-text" class="text-xs sm:text-sm text-warm-brown leading-relaxed font-medium min-h-[2.5rem]"></p>
+                </div>
+
+                <div id="dialogue-choices" class="space-y-3 pt-1">
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="modal-shop" class="fixed inset-0 z-50 hidden items-center justify-center bg-stone-900/50 backdrop-blur-sm p-4">
+        <div class="healing-card healing-shadow max-w-3xl w-full max-h-[90vh] flex flex-col overflow-hidden border-2 border-cardif">
+            <div class="px-6 py-4 bg-cardif text-white flex items-center justify-between shrink-0">
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 rounded-xl bg-white/20 flex items-center justify-center">
+                        <i class="ph-fill ph-shield-star text-2xl"></i>
+                    </div>
+                    <div>
+                        <h3 class="font-bold text-base sm:text-lg">法國巴黎人壽 · 專屬理財與保障中心</h3>
+                        <p class="text-xs text-emerald-100">專屬財務管家 陸修遠 為您量身規劃人生防護網</p>
+                    </div>
+                </div>
+                <button onclick="closeInsuranceShop()" class="w-8 h-8 rounded-lg bg-white/10 hover:bg-white/20 flex items-center justify-center">
+                    <i class="ph-bold ph-x"></i>
+                </button>
+            </div>
+
+            <div class="px-6 py-3 bg-emerald-50 border-b border-emerald-200 flex items-center gap-4 shrink-0">
+                <div id="shop-lu-avatar" class="w-14 h-14 rounded-2xl bg-white border border-emerald-300 p-1 shrink-0"></div>
+                <div class="flex-1 text-xs sm:text-sm">
+                    <div class="flex items-center gap-2 mb-0.5">
+                        <span class="font-bold text-cardif-dark">陸修遠（好感度 <span id="shop-lu-affinity">60</span>）</span>
+                        <span id="shop-discount-badge" class="px-2 py-0.5 rounded-full bg-amber-100 text-amber-800 text-[11px] font-bold">目前原價（好感滿75享85折）</span>
+                    </div>
+                    <p id="shop-lu-quote" class="text-stone-600">「每個年齡階段都有不同的風景與風險，提早配置適合的保單，才能在風雨來臨時從容微笑。」</p>
+                </div>
+            </div>
+
+            <div id="shop-products-container" class="p-6 overflow-y-auto space-y-3 flex-1 bg-cream-50">
+            </div>
+
+            <div class="px-6 py-3 bg-white border-t border-cream-200 flex flex-wrap items-center justify-between gap-2 shrink-0">
+                <div class="text-xs text-stone-500">
+                    當前可用現金：<strong id="shop-cash-display" class="text-emerald-700 font-bold text-sm">$50,000</strong>
+                </div>
+                <div class="flex items-center gap-2">
+                    <button onclick="dismissAdvisorAndLeaveShop()" class="px-3.5 py-2 rounded-xl bg-rose-50 hover:bg-rose-100 text-rose-700 border border-rose-200 text-xs font-bold transition">
+                        拒絕建議，把錢留著投機 (陸修遠好感 -10)
+                    </button>
+                    <button onclick="closeInsuranceShop()" class="px-5 py-2 rounded-xl bg-cardif hover:bg-cardif-dark text-white text-xs font-bold transition">
+                        完成配置並繼續旅程
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="modal-ending" class="fixed inset-0 z-50 hidden items-center justify-center bg-stone-900/60 backdrop-blur-md p-4">
+        <div class="healing-card healing-shadow max-w-2xl w-full max-h-[92vh] overflow-y-auto border-2 border-cream-300 p-6 sm:p-8 space-y-6">
+            <div class="text-center space-y-2">
+                <span class="text-xs font-bold uppercase tracking-widest px-3 py-1 rounded-full bg-cream-200 text-warm-brown">人生模擬結算報告</span>
+                <div id="ending-grade-badge" class="mx-auto w-24 h-24 rounded-3xl flex items-center justify-center text-5xl font-bold shadow-lg my-3">
+                    S
+                </div>
+                <h2 id="ending-title" class="text-xl sm:text-2xl font-bold text-warm-brown">財務自由，歲月靜好</h2>
+                <p id="ending-subtitle" class="text-xs sm:text-sm font-bold text-cardif-dark"></p>
+            </div>
+
+            <div class="flex items-center justify-center gap-6 py-3 bg-cream-100/70 rounded-2xl border border-cream-200">
+                <div class="text-center">
+                    <div id="ending-player-avatar" class="w-16 h-16 mx-auto rounded-2xl bg-white p-1 border border-cream-300"></div>
+                    <span class="text-xs font-bold block mt-1">最終的你</span>
+                </div>
+                <div class="text-center">
+                    <div id="ending-jiang-avatar" class="w-16 h-16 mx-auto rounded-2xl bg-white p-1 border border-amber-200"></div>
+                    <span class="text-xs font-bold block mt-1">江禾 (<span id="ending-jiang-val"></span>♥)</span>
+                </div>
+                <div class="text-center">
+                    <div id="ending-lu-avatar" class="w-16 h-16 mx-auto rounded-2xl bg-white p-1 border border-emerald-200"></div>
+                    <span class="text-xs font-bold block mt-1">陸修遠 (<span id="ending-lu-val"></span>♥)</span>
+                </div>
+            </div>
+
+            <div class="bg-white p-5 rounded-2xl border border-cream-200 space-y-2">
+                <h4 class="text-xs font-bold uppercase tracking-wider text-stone-400">結局故事描述</h4>
+                <p id="ending-description" class="text-xs sm:text-sm text-warm-brown leading-relaxed"></p>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 text-center">
+                <div class="p-3.5 rounded-2xl bg-cream-50 border border-cream-200">
+                    <span class="text-xs text-stone-500 block">1. 財務健康度 (總淨值)</span>
+                    <strong id="ending-networth" class="text-base sm:text-lg font-bold text-emerald-700 mt-1 block">$0</strong>
+                </div>
+                <div class="p-3.5 rounded-2xl bg-cream-50 border border-cream-200">
+                    <span class="text-xs text-stone-500 block">2. 風險防護力</span>
+                    <strong id="ending-defense" class="text-base sm:text-lg font-bold text-cardif-dark mt-1 block">0%</strong>
+                </div>
+                <div class="p-3.5 rounded-2xl bg-cream-50 border border-cream-200">
+                    <span class="text-xs text-stone-500 block">3. NPC 綜合羈絆值</span>
+                    <strong id="ending-affinity" class="text-base sm:text-lg font-bold text-amber-700 mt-1 block">0 分</strong>
+                </div>
+            </div>
+
+            <div class="p-4 rounded-2xl bg-cardif-light border border-cardif/30 text-xs sm:text-sm text-cardif-dark space-y-1">
+                <div class="font-bold flex items-center gap-1.5">
+                    <i class="ph-fill ph-lightbulb-filament text-base"></i> 陸修遠的財務人生筆記：
+                </div>
+                <p id="ending-advice"></p>
+            </div>
+
+            <div class="flex flex-wrap gap-3 justify-center pt-2">
+                <button onclick="replaySameCharacter()" class="px-6 py-3 rounded-xl bg-cardif hover:bg-cardif-dark text-white font-bold text-xs sm:text-sm transition shadow-md flex items-center gap-2">
+                    <i class="ph-bold ph-arrow-clockwise"></i> 再玩一次此角色
+                </button>
+                <button onclick="resetToCharacterSelect()" class="px-6 py-3 rounded-xl bg-cream-200 hover:bg-cream-300 text-warm-brown font-bold text-xs sm:text-sm transition flex items-center gap-2">
+                    <i class="ph-bold ph-users-four"></i> 體驗其他年齡層角色
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <div id="modal-guide" class="fixed inset-0 z-50 hidden items-center justify-center bg-stone-900/50 backdrop-blur-sm p-4">
+        <div class="healing-card healing-shadow max-w-2xl w-full max-h-[85vh] overflow-y-auto p-6 space-y-4">
+            <div class="flex items-center justify-between border-b border-cream-200 pb-3">
+                <h3 class="text-base sm:text-lg font-bold text-warm-brown flex items-center gap-2">
+                    <i class="ph-fill ph-book-bookmark text-cardif"></i> 《What “Card-if”：要是人生能重來？法巴財務大富翁》設計百科
+                </h3>
+                <button onclick="closeGuideModal()" class="w-8 h-8 rounded-lg bg-cream-100 hover:bg-cream-200 flex items-center justify-center">
+                    <i class="ph-bold ph-x"></i>
+                </button>
+            </div>
+            <div class="space-y-4 text-xs sm:text-sm text-stone-600 leading-relaxed">
+                <div class="p-3.5 rounded-xl bg-cream-50 border border-cream-200 space-y-1.5">
+                    <h4 class="font-bold text-warm-brown">🎲 大富翁步道與財務新規</h4>
+                    <ul class="list-disc pl-5 space-y-1">
+                        <li><strong>發薪與還款通知：</strong>經過起點時將跳出彈窗提醒，自動發薪並扣除生活費與償還所有貸款（包含學貸、信貸、房貸與向親友借的錢）。</li>
+                        <li><strong>零現金限制：</strong>當現金小於或等於 $0 時，將無法進行任何保單購買或現金交易活動。</li>
+                        <li><strong>失業重返職場：</strong>失業狀態下經過起點無法領薪，須停靠「求職培訓格」進修以順利復職！</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="text-right pt-2">
+                <button onclick="closeGuideModal()" class="px-5 py-2 rounded-xl bg-cardif text-white text-xs font-bold">我知道了</button>
+            </div>
+        </div>
+    </div>
+
+    <footer class="hidden sm:block shrink-0 text-center py-1.5 text-[11px] text-stone-400 border-t border-cream-200 bg-cream-50/80">
+        <span>《What “Card-if”：要是人生能重來？法巴財務大富翁》療癒系互動體驗 · 結合法國巴黎人壽（BNP Paribas Cardif）商品概念設計</span>
+    </footer>
+
+    <script>
+        function renderCharacterSVG(charId, mood = 'happy') {
+            const uid = `${charId}_${mood}_${Math.random().toString(36).substr(2, 5)}`;
+
+            const palettes = {
+                fresh: {
+                    bg1: '#CBE7E4', bg2: '#A9D3CE',
+                    hairBase: '#5B3A29', hairLight: '#7D523B', hairMid: '#4A2E20', hairDark: '#331E14',
+                    clothMain: '#F27D72', clothSub: '#FFF8F0', accent: '#FDD663'
+                },
+                single: {
+                    bg1: '#C8DFEA', bg2: '#A5C9DA',
+                    hairBase: '#2B3548', hairLight: '#43526E', hairMid: '#1E2636', hairDark: '#121824',
+                    clothMain: '#3B82F6', clothSub: '#1E293B', accent: '#38BDF8'
+                },
+                family: {
+                    bg1: '#D2E5D0', bg2: '#B1D1AE',
+                    hairBase: '#4E3424', hairLight: '#6E4B35', hairMid: '#3B261A', hairDark: '#26170F',
+                    clothMain: '#D97706', clothSub: '#FEF3C7', accent: '#10B981'
+                },
+                retire: {
+                    bg1: '#E5D4E8', bg2: '#CEB5D4',
+                    hairBase: '#63435E', hairLight: '#825B7C', hairMid: '#4C3248', hairDark: '#332030',
+                    clothMain: '#047857', clothSub: '#FCE7F3', accent: '#F59E0B'
+                },
+                lu: {
+                    bg1: '#C2E5D8', bg2: '#9AD2BE',
+                    hairBase: '#1E293B', hairLight: '#334155', hairMid: '#0F172A', hairDark: '#090E17',
+                    clothMain: '#00915A', clothSub: '#FFFFFF', accent: '#F59E0B'
+                },
+                jiang: {
+                    bg1: '#F2D6D8', bg2: '#E4B8BC',
+                    hairBase: '#6B3E26', hairLight: '#8C5335', hairMid: '#522E1B', hairDark: '#381E10',
+                    clothMain: '#EC4899', clothSub: '#FFF1F2', accent: '#FBBF24'
+                }
+            };
+            const p = palettes[charId] || palettes.fresh;
+
+            // 3D Clay Eyes & Eyebrows
+            let eyesAndBrowsSVG = '';
+            if (mood === 'happy' || mood === 'confident' || mood === 'relieved') {
+                const browOffset = mood === 'relieved' ? 2 : 0;
+                eyesAndBrowsSVG = `
+                    <!-- Thick 3D Floating Eyebrows -->
+                    <path d="M33 ${39 + browOffset} Q38 ${35 + browOffset} 43 ${38 + browOffset}" stroke="${p.hairDark}" stroke-width="3.6" stroke-linecap="round" fill="none"/>
+                    <path d="M57 ${38 + browOffset} Q62 ${35 + browOffset} 67 ${39 + browOffset}" stroke="${p.hairDark}" stroke-width="3.6" stroke-linecap="round" fill="none"/>
+                    <!-- 3D Glossy Button Eyes -->
+                    <circle cx="39" cy="48" r="5" fill="#FFFFFF" opacity="0.7"/>
+                    <circle cx="61" cy="48" r="5" fill="#FFFFFF" opacity="0.7"/>
+                    <circle cx="39" cy="48" r="4.3" fill="#231815"/>
+                    <circle cx="61" cy="48" r="4.3" fill="#231815"/>
+                    <circle cx="37.6" cy="46.4" r="1.5" fill="#FFFFFF"/>
+                    <circle cx="59.6" cy="46.4" r="1.5" fill="#FFFFFF"/>
+                    <circle cx="40.5" cy="49.5" r="0.7" fill="#FFFFFF" opacity="0.8"/>
+                    <circle cx="62.5" cy="49.5" r="0.7" fill="#FFFFFF" opacity="0.8"/>
+                `;
+            } else if (mood === 'worried') {
+                eyesAndBrowsSVG = `
+                    <!-- Worried Slanted Eyebrows -->
+                    <path d="M32 41 Q37 38 43 36" stroke="${p.hairDark}" stroke-width="3.5" stroke-linecap="round" fill="none"/>
+                    <path d="M57 36 Q63 38 68 41" stroke="${p.hairDark}" stroke-width="3.5" stroke-linecap="round" fill="none"/>
+                    <circle cx="39" cy="48.5" r="4.2" fill="#231815"/>
+                    <circle cx="61" cy="48.5" r="4.2" fill="#231815"/>
+                    <circle cx="37.8" cy="47" r="1.4" fill="#FFFFFF"/>
+                    <circle cx="59.8" cy="47" r="1.4" fill="#FFFFFF"/>
+                    <!-- 3D Sweat Drop -->
+                    <path d="M71 40 C71 40 74.5 45 74.5 47.5 A2.5 2.5 0 1 1 69.5 47.5 C69.5 45 71 40 71 40 Z" fill="#60A5FA"/>
+                    <circle cx="71" cy="47" r="0.8" fill="#FFFFFF"/>
+                `;
+            } else if (mood === 'crying') {
+                eyesAndBrowsSVG = `
+                    <path d="M32 41 Q37 38 43 35" stroke="${p.hairDark}" stroke-width="3.5" stroke-linecap="round" fill="none"/>
+                    <path d="M57 35 Q63 38 68 41" stroke="${p.hairDark}" stroke-width="3.5" stroke-linecap="round" fill="none"/>
+                    <!-- Crying Arcs -->
+                    <path d="M34 48 Q39 43 44 48" stroke="#231815" stroke-width="3.2" stroke-linecap="round" fill="none"/>
+                    <path d="M56 48 Q61 43 66 48" stroke="#231815" stroke-width="3.2" stroke-linecap="round" fill="none"/>
+                    <!-- 3D Tear Streams -->
+                    <path d="M35 51 Q33 59 36 64" stroke="#60A5FA" stroke-width="3.4" stroke-linecap="round" fill="none"/>
+                    <path d="M65 51 Q67 59 64 64" stroke="#60A5FA" stroke-width="3.4" stroke-linecap="round" fill="none"/>
+                `;
+            } else {
+                // shocked
+                eyesAndBrowsSVG = `
+                    <path d="M33 34 Q38 30 43 34" stroke="${p.hairDark}" stroke-width="3.6" stroke-linecap="round" fill="none"/>
+                    <path d="M57 34 Q62 30 67 34" stroke="${p.hairDark}" stroke-width="3.6" stroke-linecap="round" fill="none"/>
+                    <circle cx="39" cy="48" r="5.4" fill="#FFFFFF"/>
+                    <circle cx="61" cy="48" r="5.4" fill="#FFFFFF"/>
+                    <circle cx="39" cy="48" r="3.4" fill="#231815"/>
+                    <circle cx="61" cy="48" r="3.4" fill="#231815"/>
+                    <circle cx="38" cy="46.8" r="1.2" fill="#FFFFFF"/>
+                    <circle cx="60" cy="46.8" r="1.2" fill="#FFFFFF"/>
+                `;
+            }
+
+            // 3D Clay Mouth
+            let mouthSVG = '';
+            if (mood === 'happy' || mood === 'confident') {
+                mouthSVG = `
+                    <path d="M44.5 59.5 Q50 64.5 55.5 59.5" stroke="#8C4A32" stroke-width="2.6" stroke-linecap="round" fill="none"/>
+                `;
+            } else if (mood === 'relieved') {
+                mouthSVG = `
+                    <path d="M45.5 60 Q50 63 54.5 60" stroke="#8C4A32" stroke-width="2.4" stroke-linecap="round" fill="none"/>
+                `;
+            } else if (mood === 'worried') {
+                mouthSVG = `
+                    <path d="M45 62.5 Q50 58.5 55 62.5" stroke="#8C4A32" stroke-width="2.5" stroke-linecap="round" fill="none"/>
+                `;
+            } else if (mood === 'crying') {
+                mouthSVG = `
+                    <ellipse cx="50" cy="61.5" rx="4.2" ry="4.5" fill="#7F1D1D"/>
+                    <path d="M47 63.5 Q50 61.5 53 63.5" fill="#F87171"/>
+                `;
+            } else {
+                mouthSVG = `<ellipse cx="50" cy="61" rx="3.5" ry="4.2" fill="#7F1D1D"/>`;
+            }
+
+            // Back Hair Layer (Low-Poly Faceted for Bob / Wavy / Buns)
+            let backHairSVG = '';
+            if (charId === 'fresh') {
+                backHairSVG = `
+                    <!-- Low-Poly Faceted Bob Back -->
+                    <polygon points="22,42 15,56 23,66 32,62" fill="${p.hairDark}"/>
+                    <polygon points="15,56 20,67 28,65" fill="${p.hairMid}"/>
+                    <polygon points="78,42 85,56 77,66 68,62" fill="${p.hairDark}"/>
+                    <polygon points="85,56 80,67 72,65" fill="${p.hairMid}"/>
+                `;
+            } else if (charId === 'retire') {
+                backHairSVG = `
+                    <!-- Low-Poly Voluminous Bob Back for Chen Mei-Juan -->
+                    <polygon points="20,38 12,52 18,66 32,65" fill="${p.hairMid}"/>
+                    <polygon points="12,52 16,66 26,68 28,58" fill="${p.hairDark}"/>
+                    <polygon points="80,38 88,52 82,66 68,65" fill="${p.hairMid}"/>
+                    <polygon points="88,52 84,66 74,68 72,58" fill="${p.hairDark}"/>
+                    <!-- Elegant Top Chignon Bun -->
+                    <polygon points="38,18 45,9 55,9 62,18 50,22" fill="${p.hairLight}"/>
+                    <polygon points="38,18 45,9 50,16" fill="${p.hairBase}"/>
+                    <polygon points="62,18 55,9 50,16" fill="${p.hairMid}"/>
+                `;
+            } else if (charId === 'jiang') {
+                backHairSVG = `
+                    <!-- Low-Poly Side Twin Buns & Soft Back -->
+                    <polygon points="18,35 10,43 14,53 24,50" fill="${p.hairLight}"/>
+                    <polygon points="14,53 22,57 26,48" fill="${p.hairMid}"/>
+                    <polygon points="82,35 90,43 86,53 76,50" fill="${p.hairBase}"/>
+                    <polygon points="86,53 78,57 74,48" fill="${p.hairDark}"/>
+                    <polygon points="21,50 18,63 29,65" fill="${p.hairDark}"/>
+                    <polygon points="79,50 82,63 71,65" fill="${p.hairDark}"/>
+                `;
+            }
+
+            // Front Low-Poly Faceted Hair Cap
+            let frontHairSVG = '';
+            if (charId === 'fresh') {
+                frontHairSVG = `
+                    <!-- Low-Poly Geometric Bangs & Crown -->
+                    <polygon points="23,41 26,24 40,16 42,31" fill="${p.hairBase}"/>
+                    <polygon points="40,16 58,15 53,29 42,31" fill="${p.hairLight}"/>
+                    <polygon points="58,15 74,23 77,41 53,29" fill="${p.hairBase}"/>
+                    <polygon points="23,41 42,31 35,38" fill="${p.hairMid}"/>
+                    <polygon points="42,31 53,29 58,37 35,38" fill="${p.hairBase}"/>
+                    <polygon points="53,29 77,41 65,39 58,37" fill="${p.hairDark}"/>
+                    <!-- Cute 3D Yellow Hairpin -->
+                    <rect x="62" y="29" width="9" height="4.2" rx="2" transform="rotate(18 62 29)" fill="#FDD663" stroke="#D97706" stroke-width="0.8"/>
+                `;
+            } else if (charId === 'single') {
+                frontHairSVG = `
+                    <!-- Spiky Low-Poly Modern Pompadour (like Top-Left Doctor in reference) -->
+                    <polygon points="24,42 22,27 34,21 35,34" fill="${p.hairMid}"/>
+                    <polygon points="34,21 46,11 52,25 35,34" fill="${p.hairLight}"/>
+                    <polygon points="46,11 63,14 58,27 52,25" fill="${p.hairBase}"/>
+                    <polygon points="63,14 76,24 76,42 58,27" fill="${p.hairDark}"/>
+                    <polygon points="35,34 52,25 60,33 44,35" fill="${p.hairBase}"/>
+                    <polygon points="26,19 36,12 42,20" fill="${p.hairLight}"/>
+                `;
+            } else if (charId === 'family') {
+                frontHairSVG = `
+                    <!-- Low-Poly Neat Dad Hair + 3D Geometric Beard (like Bottom-Right Artist in reference) -->
+                    <polygon points="24,41 25,24 39,17 41,31" fill="${p.hairBase}"/>
+                    <polygon points="39,17 61,17 59,31 41,31" fill="${p.hairLight}"/>
+                    <polygon points="61,17 75,24 76,41 59,31" fill="${p.hairMid}"/>
+                    <polygon points="24,41 41,31 31,35" fill="${p.hairDark}"/>
+                    <polygon points="76,41 59,31 69,35" fill="${p.hairDark}"/>
+                `;
+            } else if (charId === 'retire') {
+                frontHairSVG = `
+                    <!-- Low-Poly Elegant Side-Parted Wavy Hair for Chen Mei-Juan -->
+                    <polygon points="21,42 25,23 43,16 44,31" fill="${p.hairLight}"/>
+                    <polygon points="43,16 62,16 58,30 44,31" fill="${p.hairBase}"/>
+                    <polygon points="62,16 76,24 79,42 58,30" fill="${p.hairMid}"/>
+                    <polygon points="21,42 44,31 32,39" fill="${p.hairBase}"/>
+                    <polygon points="44,31 58,30 79,42 66,39" fill="${p.hairDark}"/>
+                    <!-- Pearl Hair Clasp -->
+                    <circle cx="67" cy="27" r="3" fill="#FFFBEB" stroke="#F59E0B" stroke-width="1"/>
+                `;
+            } else if (charId === 'lu') {
+                frontHairSVG = `
+                    <!-- Crisp Low-Poly Side-Part Gentleman Hair (like Top-Right in reference) -->
+                    <polygon points="24,41 25,24 41,17 39,31" fill="${p.hairMid}"/>
+                    <polygon points="41,17 60,16 58,29 39,31" fill="${p.hairLight}"/>
+                    <polygon points="60,16 75,24 76,41 58,29" fill="${p.hairBase}"/>
+                    <polygon points="39,31 58,29 68,35 33,34" fill="${p.hairDark}"/>
+                `;
+            } else {
+                frontHairSVG = `
+                    <!-- Low-Poly Center-Part Curtain Bangs -->
+                    <polygon points="23,42 26,24 45,17 47,30" fill="${p.hairLight}"/>
+                    <polygon points="55,17 74,24 77,42 53,30" fill="${p.hairBase}"/>
+                    <polygon points="45,17 55,17 53,30 47,30" fill="${p.hairMid}"/>
+                    <polygon points="23,42 47,30 35,39" fill="${p.hairMid}"/>
+                    <polygon points="77,42 53,30 65,39" fill="${p.hairDark}"/>
+                `;
+            }
+
+            // Optional 3D Geometric Beard for Family character (Zhang Jia-Hao)
+            let beardSVG = '';
+            if (charId === 'family') {
+                beardSVG = `
+                    <g opacity="0.92">
+                        <polygon points="27,52 33,57 38,67 29,62" fill="${p.hairMid}"/>
+                        <polygon points="73,52 67,57 62,67 71,62" fill="${p.hairDark}"/>
+                        <polygon points="33,57 43,56 42,69 38,67" fill="${p.hairBase}"/>
+                        <polygon points="67,57 57,56 58,69 62,67" fill="${p.hairMid}"/>
+                        <polygon points="42,64 58,64 55,70 45,70" fill="${p.hairDark}"/>
+                        <polygon points="41,55 50,53 59,55 56,58 44,58" fill="${p.hairMid}"/>
+                    </g>
+                `;
+            }
+
+            // 3D Thick-Rimmed Glasses (like Center-Top Chef in reference)
+            let glassesSVG = '';
+            if (charId === 'retire') {
+                glassesSVG = `
+                    <g>
+                        <rect x="29" y="41" width="18" height="13" rx="6" fill="#FFFFFF" fill-opacity="0.2" stroke="#4A2511" stroke-width="2.6"/>
+                        <rect x="53" y="41" width="18" height="13" rx="6" fill="#FFFFFF" fill-opacity="0.2" stroke="#4A2511" stroke-width="2.6"/>
+                        <path d="M47 46.5 Q50 44.5 53 46.5" stroke="#4A2511" stroke-width="2.6" fill="none"/>
+                        <line x1="25" y1="45" x2="29" y2="46" stroke="#4A2511" stroke-width="2.2" stroke-linecap="round"/>
+                        <line x1="71" y1="46" x2="75" y2="45" stroke="#4A2511" stroke-width="2.2" stroke-linecap="round"/>
+                    </g>
+                `;
+            } else if (charId === 'lu') {
+                glassesSVG = `
+                    <g>
+                        <rect x="30" y="41.5" width="17" height="12" rx="4.5" fill="#FFFFFF" fill-opacity="0.18" stroke="#1E293B" stroke-width="2.3"/>
+                        <rect x="53" y="41.5" width="17" height="12" rx="4.5" fill="#FFFFFF" fill-opacity="0.18" stroke="#1E293B" stroke-width="2.3"/>
+                        <line x1="47" y1="46.5" x2="53" y2="46.5" stroke="#1E293B" stroke-width="2.3"/>
+                    </g>
+                `;
+            }
+
+            // 3D Clay Torso & Role-Specific Outfit
+            let outfitSVG = '';
+            if (charId === 'fresh') {
+                // Coral Cardigan + White Collar + Crossbody Bag Strap
+                outfitSVG = `
+                    <path d="M23 95 C25 74 75 74 77 95 Z" fill="url(#clothGrad_${uid})"/>
+                    <path d="M39 73 L50 86 L61 73 Z" fill="#FFFBEB"/>
+                    <path d="M36 74 L50 83 L44 72 Z" fill="#FFFFFF"/>
+                    <path d="M64 74 L50 83 L56 72 Z" fill="#FFFFFF"/>
+                    <!-- Crossbody Strap -->
+                    <path d="M33 76 L63 95" stroke="#78350F" stroke-width="3.5" stroke-linecap="round"/>
+                    <circle cx="50" cy="88" r="1.8" fill="#FDD663"/>
+                `;
+            } else if (charId === 'single') {
+                // Tech Hoodie + Blazer Jacket
+                outfitSVG = `
+                    <path d="M22 95 C24 73 76 73 78 95 Z" fill="url(#clothGrad_${uid})"/>
+                    <path d="M37 73 L50 93 L63 73 Z" fill="#1E293B"/>
+                    <path d="M33 74 Q50 82 67 74" stroke="#60A5FA" stroke-width="3" fill="none"/>
+                    <line x1="45" y1="79" x2="45" y2="89" stroke="#E2E8F0" stroke-width="1.8" stroke-linecap="round"/>
+                    <line x1="55" y1="79" x2="55" y2="89" stroke="#E2E8F0" stroke-width="1.8" stroke-linecap="round"/>
+                `;
+            } else if (charId === 'family') {
+                // Warm Jacket over Crewneck Shirt (like Bottom-Right in reference)
+                outfitSVG = `
+                    <path d="M21 95 C23 73 77 73 79 95 Z" fill="url(#clothGrad_${uid})"/>
+                    <path d="M39 73 L41 95 L59 95 L61 73 Z" fill="#FFFBEB"/>
+                    <path d="M39 73 L35 95" stroke="#92400E" stroke-width="2"/>
+                    <path d="M61 73 L65 95" stroke="#92400E" stroke-width="2"/>
+                    <circle cx="34" cy="84" r="1.6" fill="#78350F"/>
+                    <circle cx="33" cy="90" r="1.6" fill="#78350F"/>
+                `;
+            } else if (charId === 'retire') {
+                // Elegant Emerald Suit + Pearl Necklace for Chen Mei-Juan
+                outfitSVG = `
+                    <path d="M22 95 C24 73 76 73 78 95 Z" fill="url(#clothGrad_${uid})"/>
+                    <path d="M38 73 Q50 86 62 73 Z" fill="#FCE7F3"/>
+                    <!-- 3D Pearl Necklace -->
+                    <circle cx="41" cy="76" r="2" fill="#FFFBEB"/>
+                    <circle cx="45.5" cy="79" r="2.1" fill="#FFFBEB"/>
+                    <circle cx="50" cy="80" r="2.2" fill="#FFFBEB"/>
+                    <circle cx="54.5" cy="79" r="2.1" fill="#FFFBEB"/>
+                    <circle cx="59" cy="76" r="2" fill="#FFFBEB"/>
+                    <!-- Gold Brooch -->
+                    <circle cx="62" cy="84" r="2.8" fill="#FBBF24" stroke="#FEF08A" stroke-width="1"/>
+                `;
+            } else if (charId === 'lu') {
+                // BNP Paribas Cardif Advisor Suit + Tie + Gold Pin
+                outfitSVG = `
+                    <path d="M22 95 C24 73 76 73 78 95 Z" fill="url(#clothGrad_${uid})"/>
+                    <polygon points="39,72 50,88 61,72" fill="#FFFFFF"/>
+                    <polygon points="48,76 52,76 53,91 50,94 47,91" fill="#064E3B"/>
+                    <circle cx="61" cy="83" r="2.3" fill="#FBBF24"/>
+                `;
+            } else {
+                // Cozy Double-Button Coat (like Top-Center/Right in reference)
+                outfitSVG = `
+                    <path d="M23 95 C25 74 75 74 77 95 Z" fill="url(#clothGrad_${uid})"/>
+                    <path d="M37 73 Q50 82 63 73" fill="#FFF1F2" stroke="#F43F5E" stroke-width="1.5"/>
+                    <circle cx="46" cy="83" r="1.6" fill="#881337"/>
+                    <circle cx="54" cy="83" r="1.6" fill="#881337"/>
+                    <circle cx="46" cy="90" r="1.6" fill="#881337"/>
+                    <circle cx="54" cy="90" r="1.6" fill="#881337"/>
+                `;
+            }
+
+            return `
+            <svg viewBox="0 0 100 100" class="w-full h-full select-none">
+                <defs>
+                    <!-- Soft Studio Pastel Backdrop -->
+                    <radialGradient id="bgGrad_${uid}" cx="35%" cy="28%" r="75%">
+                        <stop offset="0%" stop-color="${p.bg1}"/>
+                        <stop offset="100%" stop-color="${p.bg2}"/>
+                    </radialGradient>
+                    <!-- 3D Matte Clay Skin Gradient -->
+                    <radialGradient id="skinGrad_${uid}" cx="36%" cy="30%" r="70%">
+                        <stop offset="0%" stop-color="#FFF0E5"/>
+                        <stop offset="55%" stop-color="#FAD4B8"/>
+                        <stop offset="100%" stop-color="#E2AC8B"/>
+                    </radialGradient>
+                    <!-- 3D Clay Nose Highlight -->
+                    <radialGradient id="noseGrad_${uid}" cx="35%" cy="30%" r="70%">
+                        <stop offset="0%" stop-color="#FFE8D6"/>
+                        <stop offset="65%" stop-color="#F3B895"/>
+                        <stop offset="100%" stop-color="#D9956E"/>
+                    </radialGradient>
+                    <!-- Soft Airbrushed Cheek Blush -->
+                    <radialGradient id="blushGrad_${uid}" cx="50%" cy="50%" r="50%">
+                        <stop offset="0%" stop-color="#F43F5E" stop-opacity="0.42"/>
+                        <stop offset="100%" stop-color="#F43F5E" stop-opacity="0"/>
+                    </radialGradient>
+                    <!-- 3D Clothing Shading -->
+                    <linearGradient id="clothGrad_${uid}" x1="0%" y1="0%" x2="100%" y2="100%">
+                        <stop offset="0%" stop-color="${p.clothMain}"/>
+                        <stop offset="100%" stop-color="#1E293B" stop-opacity="0.35"/>
+                    </linearGradient>
+                    <!-- Soft 3D Toy Drop Shadow -->
+                    <filter id="clayShadow_${uid}" x="-15%" y="-15%" width="130%" height="130%">
+                        <feDropShadow dx="0" dy="3" stdDeviation="2.2" flood-color="#332218" flood-opacity="0.22"/>
+                    </filter>
+                </defs>
+
+                <!-- Rounded Studio Portrait Card -->
+                <circle cx="50" cy="50" r="47" fill="url(#bgGrad_${uid})"/>
+
+                <g filter="url(#clayShadow_${uid})">
+                    ${backHairSVG}
+
+                    <!-- 3D Clay Neck with shadow -->
+                    <rect x="43" y="64" width="14" height="13" rx="6" fill="#DC9E79"/>
+                    <ellipse cx="50" cy="68" rx="7" ry="3.5" fill="#C5835E" opacity="0.5"/>
+
+                    <!-- 3D Clay Outfit -->
+                    ${outfitSVG}
+
+                    <!-- Big 3D Round Toy Ears (Signature Reference Style) -->
+                    <circle cx="23.5" cy="49.5" r="7" fill="url(#skinGrad_${uid})"/>
+                    <circle cx="24" cy="49.5" r="3.6" fill="#DC9874" opacity="0.65"/>
+                    <circle cx="76.5" cy="49.5" r="7" fill="url(#skinGrad_${uid})"/>
+                    <circle cx="76" cy="49.5" r="3.6" fill="#DC9874" opacity="0.65"/>
+
+                    <!-- Chubby 3D Clay Head -->
+                    <rect x="25.5" y="24" width="49" height="44" rx="22.5" fill="url(#skinGrad_${uid})"/>
+
+                    <!-- Soft Airbrushed Rosy Cheeks -->
+                    <circle cx="33.5" cy="54.5" r="6.5" fill="url(#blushGrad_${uid})"/>
+                    <circle cx="66.5" cy="54.5" r="6.5" fill="url(#blushGrad_${uid})"/>
+
+                    ${beardSVG}
+
+                    <!-- Eyes & Floating 3D Eyebrows -->
+                    ${eyesAndBrowsSVG}
+
+                    <!-- Signature Cute 3D Bulbous Clay Nose -->
+                    <ellipse cx="50" cy="52" rx="4.3" ry="3.6" fill="url(#noseGrad_${uid})"/>
+                    <ellipse cx="48.8" cy="50.8" rx="1.4" ry="0.9" fill="#FFFFFF" opacity="0.65"/>
+
+                    <!-- Mouth -->
+                    ${mouthSVG}
+
+                    <!-- Glasses (if applicable) -->
+                    ${glassesSVG}
+
+                    <!-- Low-Poly Faceted 3D Front Hair -->
+                    ${frontHairSVG}
+                </g>
+            </svg>`;
+        }
+
+        const MOOD_LABELS = {
+            happy: '😊 溫馨愉悅',
+            confident: '✨ 自信從容',
+            relieved: '😌 安心釋懷',
+            worried: '😰 焦慮擔憂',
+            crying: '😭 崩潰落淚',
+            shocked: '😱 震驚錯愕'
+        };
+
+        const CHARACTERS = [
+            {
+                id: 'fresh',
+                name: '林小葵',
+                age: 24,
+                title: '小資新鮮人',
+                tagColor: 'bg-emerald-100 text-emerald-800',
+                salary: 32000,
+                livingCost: 18000,
+                debtPayment: 4000,
+                initialCash: 45000,
+                initialDebt: 240000,
+                debtName: '學貸與機車分期',
+                initialSan: 85,
+                jiangRole: '大學摯友 / 室友',
+                goal: '累積第一桶金，建立基礎醫療與意外防護，避免一次意外就破產',
+                bio: '剛踏入職場的行銷企劃，月薪 $32,000，背負學貸且存款微薄，每天騎機車通勤。',
+                recommendedPolicyIds: ['accident_med', 'cardif_vul_micro'],
+                crisisRound: 5
+            },
+            {
+                id: 'single',
+                name: '陳子昂',
+                age: 32,
+                title: '黃金單身貴族',
+                tagColor: 'bg-sky-100 text-sky-800',
+                salary: 85000,
+                livingCost: 42000,
+                debtPayment: 8000,
+                initialCash: 280000,
+                initialDebt: 150000,
+                debtName: '信貸投資槓桿',
+                initialSan: 80,
+                jiangRole: '交往多年的伴侶',
+                goal: '穩健增值資產，同時防範重大傷病與科技業裁員潮吃掉投資本金',
+                bio: '科技業中階主管，月薪 $85,000，熱衷股票與加密貨幣，卻忽略了自身重大傷病防禦。',
+                recommendedPolicyIds: ['cardif_vul_ci', 'accident_med'],
+                crisisRound: 5
+            },
+            {
+                id: 'family',
+                name: '張家豪',
+                age: 42,
+                title: '三明治家庭支柱',
+                tagColor: 'bg-amber-100 text-amber-800',
+                salary: 60000,
+                livingCost: 32000,
+                debtPayment: 18000,
+                initialCash: 180000,
+                initialDebt: 4500000,
+                homeValue: 5000000,
+                debtName: '家庭千萬房貸餘額',
+                initialSan: 75,
+                jiangRole: '同甘共苦的配偶',
+                goal: '確保家庭現金流不斷鏈，透過法巴房貸壽險防範失能或身故導致房屋被法拍',
+                bio: '雙薪家庭支柱，月薪 $60,000，上有老下有小，剛買下溫馨新房但背負沉重房貸。',
+                recommendedPolicyIds: ['cardif_mortgage', 'cardif_vul_ci'],
+                crisisRound: 5
+            },
+            {
+                id: 'retire',
+                name: '陳美娟',
+                age: 55,
+                title: '準退休規劃者',
+                tagColor: 'bg-purple-100 text-purple-800',
+                salary: 110000,
+                livingCost: 50000,
+                debtPayment: 10000,
+                initialCash: 1200000,
+                initialDebt: 200000,
+                debtName: '房屋修繕尾款',
+                initialSan: 82,
+                jiangRole: '相伴半生的老伴',
+                goal: '資產保全、對抗通膨，配置法巴變額年金與長照險，守護退休尊嚴',
+                bio: '企業高階主管，月薪 $110,000，資產豐厚準備 10 年後退休，與老伴江禾感情深厚。',
+                recommendedPolicyIds: ['cardif_va_retire', 'ltc_care'],
+                crisisRound: 5
+            }
+        ];
+
+        const INSURANCE_PRODUCTS = [
+            {
+                id: 'accident_med',
+                name: '定期意外與醫療實支實付',
+                badge: '基礎防護必備',
+                upfrontCost: 15000,
+                perLapPremium: 3000,
+                defenseScore: 30,
+                accountValueAdd: 0,
+                yieldRate: 0,
+                desc: '針對突發車禍、骨折、住院手術提供全額實支實付與休養津貼，小資族第一道防線。',
+                suitFor: ['fresh', 'single']
+            },
+            {
+                id: 'cardif_vul_micro',
+                name: '法巴小額變額萬能壽險 (投資型)',
+                badge: '法巴特色 · 小資首選',
+                upfrontCost: 25000,
+                perLapPremium: 5000,
+                defenseScore: 35,
+                accountValueAdd: 25000,
+                yieldRate: 0.06,
+                desc: '低門檻定期定額強迫儲蓄，兼顧壽險保障與專家代操投資帳戶，穩健累積第一桶金！',
+                suitFor: ['fresh', 'single']
+            },
+            {
+                id: 'cardif_vul_ci',
+                name: '法巴投資型保單＋重大傷病附約',
+                badge: '法巴王牌 · 攻守兼備',
+                upfrontCost: 85000,
+                perLapCostForFresh: 40000,
+                perLapPremium: 10000,
+                defenseScore: 55,
+                accountValueAdd: 75000,
+                yieldRate: 0.07,
+                desc: '確診重大傷病立即給付 50 萬一次金，且保單帳戶價值可靈活提領作為失業過渡金！',
+                suitFor: ['single', 'family']
+            },
+            {
+                id: 'cardif_mortgage',
+                name: '法巴房貸壽險（附加失能/重傷）',
+                badge: '法巴核心 · 留愛不留債',
+                upfrontCost: 95000,
+                perLapPremium: 12000,
+                defenseScore: 60,
+                accountValueAdd: 40000,
+                yieldRate: 0.03,
+                desc: '專為房貸族設計！若遭遇 1~6 級失能或重傷，理賠金直接為您清償剩餘房貸，並給予定期扶助金，守護全家的避風港。',
+                suitFor: ['family']
+            },
+            {
+                id: 'cardif_va_retire',
+                name: '法巴變額年金保險（穩健撥回型）',
+                badge: '法巴退休旗艦 · 下檔保護',
+                upfrontCost: 300000,
+                perLapPremium: 20000,
+                defenseScore: 50,
+                accountValueAdd: 300000,
+                yieldRate: 0.065,
+                desc: '具備下檔保護與穩定資產撥回機制，無懼全球金融海嘯股災，打造源源不絕的退休現金流。',
+                suitFor: ['retire', 'single']
+            },
+            {
+                id: 'ltc_care',
+                name: '高齡長照與失智守護險',
+                badge: '銀髮安心保障',
+                upfrontCost: 120000,
+                perLapPremium: 12000,
+                defenseScore: 40,
+                accountValueAdd: 0,
+                yieldRate: 0,
+                desc: '針對失智症或長期臥床提供一次性關懷金與每月外籍看護補助，不讓長照費用拖垮退休老本。',
+                suitFor: ['retire', 'family']
+            }
+        ];
+
+        const BOARD_TILES = [
+            { id: 0, name: '發薪與還款日', type: 'start', icon: 'ph-coins', color: 'bg-emerald-50 border-emerald-300 text-emerald-800', sub: '領薪/繳貸' },
+            { id: 1, name: '法巴理財中心', type: 'shop', icon: 'ph-shield-star', color: 'bg-cardif-light border-cardif text-cardif-dark', sub: '配置保單' },
+            { id: 2, name: '日常小確幸', type: 'chance', icon: 'ph-clover', color: 'bg-amber-50 border-amber-300 text-amber-800', sub: '機會事件' },
+            { id: 3, name: '江禾的約定', type: 'npc_jiang', icon: 'ph-heart', color: 'bg-rose-50 border-rose-300 text-rose-800', sub: '伴侶/摯友' },
+            { id: 4, name: '命運轉折點', type: 'fate', icon: 'ph-lightning', color: 'bg-purple-50 border-purple-300 text-purple-800', sub: '突發風險' },
+            { id: 5, name: '職涯與進修院', type: 'training', icon: 'ph-graduation-cap', color: 'bg-sky-50 border-sky-300 text-sky-800', sub: '進修/復職' },
+            { id: 6, name: '陸修遠下午茶', type: 'npc_lu', icon: 'ph-coffee', color: 'bg-emerald-50 border-emerald-300 text-emerald-800', sub: '財務健檢' },
+            { id: 7, name: '市場波動站', type: 'chance', icon: 'ph-chart-line-up', color: 'bg-amber-50 border-amber-300 text-amber-800', sub: '投資機會' },
+            { id: 8, name: '法巴旗艦會館', type: 'shop', icon: 'ph-shield-check', color: 'bg-cardif-light border-cardif text-cardif-dark', sub: '調整保障' },
+            { id: 9, name: '黑天鵝風暴區', type: 'fate', icon: 'ph-cloud-lightning', color: 'bg-rose-50 border-rose-300 text-rose-800', sub: '命運考驗' },
+            { id: 10, name: '溫馨家庭日', type: 'npc_jiang', icon: 'ph-house-line', color: 'bg-amber-50 border-amber-300 text-amber-800', sub: '情感升溫' },
+            { id: 11, name: '斜槓與機會', type: 'chance', icon: 'ph-sparkle', color: 'bg-emerald-50 border-emerald-300 text-emerald-800', sub: '額外收入' },
+            { id: 12, name: '求職培訓中心', type: 'training', icon: 'ph-briefcase', color: 'bg-sky-50 border-sky-300 text-sky-800', sub: '重返職場' },
+            { id: 13, name: '法巴保障驛站', type: 'shop', icon: 'ph-umbrella', color: 'bg-cardif-light border-cardif text-cardif-dark', sub: '保單守護' },
+            { id: 14, name: '健康與突發', type: 'fate', icon: 'ph-first-aid-kit', color: 'bg-purple-50 border-purple-300 text-purple-800', sub: '健康檢視' },
+            { id: 15, name: '陸修遠來電', type: 'npc_lu', icon: 'ph-phone-call', color: 'bg-emerald-50 border-emerald-300 text-emerald-800', sub: '專屬關懷' }
+        ];
+
+        const RING_COORDS = [
+            { r: 1, c: 1 }, { r: 1, c: 2 }, { r: 1, c: 3 }, { r: 1, c: 4 }, { r: 1, c: 5 },
+            { r: 2, c: 5 }, { r: 3, c: 5 }, { r: 4, c: 5 }, { r: 5, c: 5 },
+            { r: 5, c: 4 }, { r: 5, c: 3 }, { r: 5, c: 2 }, { r: 5, c: 1 },
+            { r: 4, c: 1 }, { r: 3, c: 1 }, { r: 2, c: 1 }
+        ];
+
+        const ROLE_CHANCE_EVENTS = {
+            fresh: [
+                {
+                    title: '【小資小確幸】社群專案爆紅獎金！',
+                    context: '妳負責的短影音企劃觀看破百萬，老闆當場發放專案激勵獎金 $18,000！',
+                    npc: 'lu',
+                    npcMood: 'happy',
+                    playerMood: 'happy',
+                    speech: '小葵恭喜妳！這筆 $18,000 額外獎金，要不要趁機撥一部分投入法巴小額投資型保單，讓第一桶金長得更快？',
+                    choices: [
+                        {
+                            text: '聽陸修遠的，將 $18,000 存入資產並穩健理財 (現金 +$18,000，陸修遠 +8，滿意度 +6)',
+                            action: () => {
+                                modifyCash(18000);
+                                modifyAffinity('lu', 8);
+                                modifySan(6);
+                                addLog('🎉 獲得專案獎金 +$18,000，穩健儲蓄獲陸修遠讚賞！', 'good');
+                            }
+                        },
+                        {
+                            text: '跟室友江禾去吃高級燒肉慶祝花掉一半 (現金 +$9,000，江禾 +10，陸修遠 -5，滿意度 +10)',
+                            action: () => {
+                                modifyCash(9000);
+                                modifyAffinity('jiang', 10);
+                                modifyAffinity('lu', -5);
+                                modifySan(10);
+                                addLog('🍖 與江禾吃大餐慶祝，實拿 +$9,000，感情升溫！', 'info');
+                            }
+                        }
+                    ]
+                },
+                {
+                    title: '【小資斜槓】週末幫忙學長姐接案設計',
+                    context: '週末熬夜幫學長姐趕製活動簡報，獲得外快 $12,000。',
+                    npc: 'jiang',
+                    npcMood: 'happy',
+                    playerMood: 'confident',
+                    speech: '小葵妳太拼了吧！拿到外快記得先存起來或還一點學貸，別又在網購清空購物車囉！',
+                    choices: [
+                        {
+                            text: '乖乖收下外快並優先償還 $6,000 學貸 (現金 +$6,000，負債 -$6,000，江禾 +6，滿意度 +5)',
+                            action: () => {
+                                modifyCash(6000);
+                                gameState.debt = Math.max(0, gameState.debt - 6000);
+                                modifyAffinity('jiang', 6);
+                                modifySan(5);
+                                addLog('💼 斜槓外快入帳，並提前償還 $6,000 學貸！', 'good');
+                            }
+                        }
+                    ]
+                }
+            ],
+            single: [
+                {
+                    title: '【科技新貴紅利】年度分紅與專利獎金入袋',
+                    context: '你主導的晶片演算法順利量產，公司發放分紅獎金 $65,000！',
+                    npc: 'lu',
+                    npcMood: 'confident',
+                    playerMood: 'confident',
+                    speech: '子昂，科技業景氣循環快，建議把這筆 $65,000 分紅配置在穩健標的或強化重大傷病保障，別全押高槓桿虛擬幣。',
+                    choices: [
+                        {
+                            text: '全數納入穩健現金儲備，聽從專業建議 (現金 +$65,000，陸修遠 +10，滿意度 +8)',
+                            action: () => {
+                                modifyCash(65000);
+                                modifyAffinity('lu', 10);
+                                modifySan(8);
+                                addLog('💎 科技業分紅 +$65,000 穩健入袋！', 'good');
+                            }
+                        },
+                        {
+                            text: '拿分紅帶江禾去東京來場奢華週末旅行 (現金 +$25,000，江禾 +14，陸修遠 -6，滿意度 +14)',
+                            action: () => {
+                                modifyCash(25000);
+                                modifyAffinity('jiang', 14);
+                                modifyAffinity('lu', -6);
+                                modifySan(14);
+                                addLog('✈️ 東京奢華之旅讓伴侶江禾超開心，分紅結餘 +$25,000。', 'info');
+                            }
+                        }
+                    ]
+                }
+            ],
+            family: [
+                {
+                    title: '【雙薪家庭小確幸】資深幹部績效獎金與育兒津貼',
+                    context: '公司肯定你的穩定表現發放獎金，加上政府育兒補助共入帳 $42,000！',
+                    npc: 'jiang',
+                    npcMood: 'happy',
+                    playerMood: 'happy',
+                    speech: '老公太棒了！這筆 $42,000 剛好可以幫家裡添購新家電，也能多還一點房貸本金！',
+                    choices: [
+                        {
+                            text: '將 $22,000 留作現金，另外 $20,000 提前償還房貸本金 (現金 +$22,000，房貸 -$20,000，江禾 +10)',
+                            action: () => {
+                                modifyCash(22000);
+                                gameState.debt = Math.max(0, gameState.debt - 20000);
+                                modifyAffinity('jiang', 10);
+                                modifySan(8);
+                                addLog('🏠 績效獎金入帳，並提前償還 $20,000 房貸本金！', 'good');
+                            }
+                        }
+                    ]
+                }
+            ],
+            retire: [
+                {
+                    title: '【準退休紅利】高階顧問分紅與績優股配息',
+                    context: '陳美娟多年經營的業界口碑帶來豐厚顧問費與股息，共計 $120,000！',
+                    npc: 'lu',
+                    npcMood: 'happy',
+                    playerMood: 'confident',
+                    speech: '美娟姐，這筆 $120,000 配息非常可觀！若已配置法巴變額年金，我們能再強化退休現金流護城河。',
+                    choices: [
+                        {
+                            text: '穩健收下 $120,000 並與老伴江禾去泡溫泉養生 (現金 +$120,000，江禾 +10，陸修遠 +8，滿意度 +10)',
+                            action: () => {
+                                modifyCash(120000);
+                                modifyAffinity('jiang', 10);
+                                modifyAffinity('lu', 8);
+                                modifySan(10);
+                                addLog('♨️ 顧問費與股息 +$120,000 入袋，與江禾愜意泡湯！', 'good');
+                            }
+                        }
+                    ]
+                }
+            ]
+        };
+
+        const ROLE_FATE_EVENTS = {
+            fresh: [
+                {
+                    title: '【小資命運】租屋處冷氣漏水弄壞筆電＆急性腸胃炎掛急診',
+                    context: '屋漏偏逢連夜雨，生財工具筆電泡水報銷，又因熬夜趕稿引發急性腸胃炎住院吊點滴，需支出 $22,000。',
+                     renderChoices: () => {
+                        const hasMed = hasPolicy('accident_med');
+                        if (hasMed) {
+                            return [{
+                                text: '啟動【定期意外與醫療實支實付】理賠住院費，僅自付筆電維修 $6,000 (陸修遠 +8，滿意度 +4)',
+                                action: () => {
+                                    deductCashWithLoanFallback(6000, '筆電維修自付額');
+                                    gameState.coveredLossTotal += 16000;
+                                    modifyAffinity('lu', 8);
+                                    modifySan(4);
+                                    addLog('🛡️ 醫療險理賠 $16,000 急診住院費，輕鬆化解小資危機！', 'good');
+                                }
+                            }];
+                        }
+                        return [
+                            {
+                                text: '沒有醫療險，硬著頭皮付清 $22,000 (若現金不足自動轉為貸款，滿意度 -12)',
+                                action: () => {
+                                    deductCashWithLoanFallback(22000, '急診與筆電維修');
+                                    gameState.uncoveredLossTotal += 22000;
+                                    modifySan(-12);
+                                    addLog('💸 無醫療險保障，自掏腰包承受 $22,000 損失。', 'bad');
+                                }
+                            },
+                            {
+                                text: '向室友江禾開口借 $22,000 應急 (計入貸款負債 +$22,000，江禾好感 -12，滿意度 -10)',
+                                action: () => {
+                                    gameState.debt += 22000;
+                                    gameState.uncoveredLossTotal += 22000;
+                                    modifyAffinity('jiang', -12);
+                                    modifySan(-10);
+                                    addLog('⚠️ 向江禾借款 $22,000 應急（已計入貸款總額），江禾有些微詞。', 'bad');
+                                }
+                            }
+                        ];
+                    }
+                }
+            ],
+            single: [
+                {
+                    title: '【單身新貴黑天鵝】加密貨幣交易所暴雷＆高壓引發自律神經失調',
+                    context: '你跟風投入的高槓桿標的突然暴跌，同時長期熬夜導致顏面神經麻痺需自費高階療程，共損失 $90,000。',
+                    renderChoices: () => {
+                        const hasVul = hasPolicy('cardif_vul_ci') || hasPolicy('accident_med');
+                        if (hasVul) {
+                            return [{
+                                text: '幸好有配置法巴保障與醫療防護，理賠吸收大部分醫療支出，僅損失 $20,000 (陸修遠 +10，滿意度 +5)',
+                                action: () => {
+                                    deductCashWithLoanFallback(20000, '市場波動小額損失');
+                                    gameState.coveredLossTotal += 70000;
+                                    modifyAffinity('lu', 10);
+                                    modifySan(5);
+                                    addLog('🛡️ 法巴保單發揮防護網作用，擋下 $70,000 醫療與資產衝擊！', 'good');
+                                }
+                            }];
+                        }
+                        return [
+                            {
+                                text: '無保險防護，慘賠 $90,000 並獨自承受失眠焦慮 (滿意度 -18，陸修遠 -6)',
+                                action: () => {
+                                    deductCashWithLoanFallback(90000, '幣圈暴雷與自費醫療');
+                                    gameState.uncoveredLossTotal += 90000;
+                                    modifyAffinity('lu', -6);
+                                    modifySan(-18);
+                                    addLog('⚡ 缺乏保障又遇投資暴雷，重創 $90,000！', 'bad');
+                                }
+                            }
+                        ];
+                    }
+                }
+            ],
+            family: [
+                {
+                    title: '【三明治家庭考驗】長輩突發跌倒手術＆孩子教育費雙重夾擊',
+                    context: '父親在浴室滑倒需自費人工關節，同時孩子開學註冊費到期，家庭急需 $75,000 週轉！',
+                    renderChoices: () => {
+                        const hasFamilyCover = hasPolicy('cardif_mortgage') || hasPolicy('cardif_vul_ci') || hasPolicy('accident_med');
+                        if (hasFamilyCover) {
+                            return [{
+                                text: '運用已規劃的家庭醫療與法巴保單帳戶價值靈活週轉，僅自付 $15,000 (江禾 +12，陸修遠 +10)',
+                                action: () => {
+                                    deductCashWithLoanFallback(15000, '家庭週轉自付額');
+                                    gameState.coveredLossTotal += 60000;
+                                    modifyAffinity('jiang', 12);
+                                    modifyAffinity('lu', 10);
+                                    modifySan(6);
+                                    addLog('🛡️ 法巴保單協助化解長輩手術與開學週轉危機，伴侶江禾倍感安心！', 'good');
+                                }
+                            }];
+                        }
+                        return [
+                            {
+                                text: '沒有充足保障，硬擠出 $75,000 導致家用捉襟見肘，與江禾發生爭執 (江禾 -15，滿意度 -16)',
+                                action: () => {
+                                    deductCashWithLoanFallback(75000, '長輩手術與教育費');
+                                    gameState.uncoveredLossTotal += 75000;
+                                    modifyAffinity('jiang', -15);
+                                    modifySan(-16);
+                                    addLog('🌩️ 家庭急用 $75,000 缺乏保險支援，夫妻因財務壓力爭吵。', 'bad');
+                                }
+                            }
+                        ];
+                    }
+                }
+            ],
+            retire: [
+                {
+                    title: '【準退休震盪】海外高息債券違約＆視網膜剝離微創手術',
+                    context: '早年聽信偏方買的高風險商品違約，加上眼睛急需自費高階水晶體手術，面臨 $180,000 財務考驗。',
+                    renderChoices: () => {
+                        const hasRetireCover = hasPolicy('cardif_va_retire') || hasPolicy('ltc_care');
+                        if (hasRetireCover) {
+                            return [{
+                                text: '幸好主力資產已轉入【法巴變額年金】並有醫療保障，僅小損 $30,000 (陸修遠 +12，滿意度 +6)',
+                                action: () => {
+                                    deductCashWithLoanFallback(30000, '微創手術差額');
+                                    gameState.coveredLossTotal += 150000;
+                                    modifyAffinity('lu', 12);
+                                    modifySan(6);
+                                    addLog('🛡️ 法巴變額年金與醫療保障成功護航，免於 $150,000 老本流失！', 'good');
+                                }
+                            }];
+                        }
+                        return [
+                            {
+                                text: '無下檔保護與保險，老本痛失 $180,000，老伴江禾憂心忡忡 (江禾 -14，滿意度 -20)',
+                                action: () => {
+                                    deductCashWithLoanFallback(180000, '債券違約與手術自費');
+                                    gameState.uncoveredLossTotal += 180000;
+                                    modifyAffinity('jiang', -14);
+                                    modifySan(-20);
+                                    addLog('💥 退休老本痛失 $180,000，江禾對退休生活感到憂慮。', 'bad');
+                                }
+                            }
+                        ];
+                    }
+                }
+            ]
+        };
+
+        let gameState = {
+            char: null,
+            round: 1,
+            maxRounds: 12,
+            age: 24,
+            position: 0,
+            cash: 0,
+            debt: 0,
+            policyValue: 0,
+            san: 85,
+            luAffinity: 60,
+            jiangAffinity: 65,
+            isEmployed: true,
+            reemployChance: 0,
+            policies: [],
+            crisisTriggered: false,
+            breakupWarned: false,
+            coveredLossTotal: 0,
+            uncoveredLossTotal: 0,
+            playerMood: 'happy',
+            luMood: 'happy',
+            jiangMood: 'happy',
+            isRolling: false,
+            shopOpenedFromTile: false,
+            boughtInCurrentShopVisit: false,
+            afterNotificationCallback: null
+        };
+
+        let typewriterTimer = null;
+        let stepIntervalId = null;
+
+        function formatMoney(num) {
+            const sign = num < 0 ? '-' : '';
+            return sign + '$' + Math.abs(Math.round(num)).toLocaleString('en-US');
+        }
+
+        function initGameUI() {
+            document.getElementById('preview-npc-lu').innerHTML = renderCharacterSVG('lu', 'happy');
+            document.getElementById('preview-npc-jiang').innerHTML = renderCharacterSVG('jiang', 'happy');
+
+            const container = document.getElementById('character-cards-container');
+            container.innerHTML = CHARACTERS.map(c => `
+                <div class="healing-card healing-shadow p-3 sm:p-4 flex flex-col justify-between hover:-translate-y-1 transition duration-300 border-2 border-cream-200 hover:border-cardif group cursor-pointer" onclick="startGameWithCharacter('${c.id}')">
+                    <div>
+                        <div class="flex items-center justify-between gap-2 mb-3">
+                            <span class="text-xs px-2.5 py-1 rounded-full font-bold ${c.tagColor}">${c.age} 歲 · ${c.title}</span>
+                            <span class="text-xs text-stone-400 font-medium">月薪 ${formatMoney(c.salary)}</span>
+                        </div>
+                        <div class="w-20 h-20 sm:w-24 sm:h-24 mx-auto rounded-3xl bg-cream-100 border border-cream-300 p-1.5 mb-2 group-hover:scale-105 transition">
+                            ${renderCharacterSVG(c.id, 'happy')}
+                        </div>
+                        <h4 class="text-lg font-bold text-center text-warm-brown">${c.name}</h4>
+                        <p class="card-bio text-xs text-stone-500 text-center mt-1 leading-relaxed">${c.bio}</p>
+                        <div class="mt-4 p-3 rounded-xl bg-cream-50 border border-cream-200 space-y-1.5 text-xs">
+                            <div class="flex justify-between">
+                                <span class="text-stone-500">初始現金：</span>
+                                <strong class="text-emerald-700">${formatMoney(c.initialCash)}</strong>
+                            </div>
+                            <div class="flex justify-between">
+                                <span class="text-stone-500">${c.debtName}：</span>
+                                <strong class="text-rose-600">${formatMoney(c.initialDebt)}</strong>
+                            </div>
+                            <div class="flex justify-between">
+                                <span class="text-stone-500">江禾身分：</span>
+                                <strong class="text-amber-800">${c.jiangRole}</strong>
+                            </div>
+                        </div>
+                    </div>
+                    <button class="mt-4 w-full py-2.5 rounded-xl bg-cardif group-hover:bg-cardif-dark text-white font-bold text-xs transition flex items-center justify-center gap-1.5 shadow-sm">
+                        <span>開啟 ${c.name} 的財務人生</span>
+                        <i class="ph-bold ph-arrow-right"></i>
+                    </button>
+                </div>
+            `).join('');
+        }
+
+        function startGameWithCharacter(charId) {
+            const c = CHARACTERS.find(item => item.id === charId);
+            if (!c) return;
+            clearInterval(stepIntervalId);
+
+            gameState = {
+                char: { ...c },
+                round: 1,
+                maxRounds: 18,
+                age: c.age,
+                position: 0,
+                cash: c.initialCash,
+                debt: c.initialDebt,
+                assetValue: c.homeValue || 0,
+                policyValue: 0,
+                san: c.initialSan,
+                luAffinity: 60,
+                jiangAffinity: 65,
+                isEmployed: true,
+                reemployChance: 0,
+                policies: [],
+                crisisTriggered: false,
+                breakupWarned: false,
+                coveredLossTotal: 0,
+                uncoveredLossTotal: 0,
+                playerMood: 'happy',
+                luMood: 'happy',
+                jiangMood: 'happy',
+                isRolling: false,
+                shopOpenedFromTile: false,
+                boughtInCurrentShopVisit: false,
+                afterNotificationCallback: null
+            };
+
+            document.getElementById('screen-select').classList.add('hidden');
+            document.body.classList.add('playing');
+            document.getElementById('screen-game').classList.remove('hidden');
+            document.getElementById('btn-restart-top').classList.remove('hidden');
+            document.getElementById('btn-restart-top').classList.add('flex');
+            document.getElementById('header-round-badge').classList.remove('hidden');
+            document.getElementById('game-log-list').innerHTML = '';
+
+            addLog(`🌱 歡迎來到《What “Card-if”：要是人生能重來？法巴財務大富翁》！你扮演 ${c.age} 歲的【${c.name}（${c.title}）】，初始現金 ${formatMoney(c.initialCash)}，背負${c.debtName} ${formatMoney(c.initialDebt)}。`, 'info');
+            updateAllUI();
+            renderMonopolyBoard();
+
+            setTimeout(() => {
+                openDialogueModal({
+                    category: '人生啟程 · 財務管家初見面',
+                    location: '法巴迎賓大廳',
+                    title: `陸修遠與${c.jiangRole}「江禾」的祝福`,
+                    context: `${c.name}，你正站在 ${c.age} 歲的人生起跑點。${c.bio} 專屬財務管家陸修遠帶著一份量身打造的保障建議書向你走來。`,
+                    npc: 'lu',
+                    npcMood: 'happy',
+                    playerMood: 'happy',
+                    speech: `你好，我是法國巴黎人壽專屬財務管家陸修遠。針對${c.title}階段，我強烈建議優先評估「${getRecommendedNames(c)}」，現在要直接先來看看規劃嗎？`,
+                    choices: [
+                        {
+                            text: '好呀！先打開【法巴理財中心】了解適合我的保單 (陸修遠好感 +8，滿意度 +4)',
+                            action: () => {
+                                modifyAffinity('lu', 8);
+                                modifySan(4);
+                                openInsuranceShop(false);
+                            }
+                        },
+                        {
+                            text: '先不用，我想直接擲骰子開始闖蕩人生步道！',
+                            action: () => {
+                                addLog('🎲 決定先出發探索人生步道！隨時可點擊右側「投保規劃」配置保單。', 'info');
+                            }
+                        },
+                        {
+                            text: '保險都是騙人的啦！我要把錢全部拿去衝刺高風險投機 (陸修遠好感 -8)',
+                            action: () => {
+                                modifyAffinity('lu', -8);
+                                addLog('⚠️ 你開局拒絕了陸修遠的善意提醒，陸修遠感到有些擔憂。', 'bad');
+                            }
+                        }
+                    ]
+                });
+            }, 250);
+        }
+
+        function getRecommendedNames(c) {
+            return c.recommendedPolicyIds.map(id => {
+                const p = INSURANCE_PRODUCTS.find(item => item.id === id);
+                return p ? p.name : '';
+            }).filter(Boolean).join('」與「');
+        }
+
+        function hasPolicy(policyId) {
+            return gameState.policies.includes(policyId);
+        }
+
+        function getDefensePercentage() {
+            const total = gameState.policies.reduce((acc, id) => {
+                const p = INSURANCE_PRODUCTS.find(item => item.id === id);
+                return acc + (p ? p.defenseScore : 0);
+            }, 0);
+            return Math.min(100, total);
+        }
+
+        function getPerLapCashflow() {
+            const c = gameState.char;
+            if (!c) return 0;
+            const income = gameState.isEmployed ? c.salary : 0;
+            const premiums = gameState.policies.reduce((acc, id) => {
+                const p = INSURANCE_PRODUCTS.find(item => item.id === id);
+                return acc + (p ? p.perLapPremium : 0);
+            }, 0);
+            const debtPay = gameState.debt > 0 ? Math.min(gameState.debt, c.debtPayment) : 0;
+            return income - c.livingCost - debtPay - premiums;
+        }
+
+        function modifyCash(delta) {
+            gameState.cash = Math.round(gameState.cash + delta);
+            updateAllUI();
+        }
+
+        function deductCashWithLoanFallback(amount, reason = '支出') {
+            if (gameState.cash >= amount) {
+                gameState.cash -= amount;
+            } else {
+                const shortfall = amount - Math.max(0, gameState.cash);
+                gameState.cash = Math.max(0, gameState.cash);
+                gameState.debt += shortfall;
+                addLog(`⚠️ 因現金不足支付「${reason}」，差額 ${formatMoney(shortfall)} 已自動轉入貸款負債！`, 'bad');
+            }
+            updateAllUI();
+        }
+
+        function modifySan(delta) {
+            if (!delta) return;
+            gameState.san = Math.max(0, Math.min(100, gameState.san + delta));
+            const badge = document.getElementById('san-delta-badge');
+            if (badge) {
+                badge.textContent = delta > 0 ? `+${delta} 😊` : `${delta} 😰`;
+                badge.className = `text-xs font-bold px-1.5 py-0.5 rounded-md ${delta > 0 ? 'bg-emerald-100 text-emerald-700' : 'bg-rose-100 text-rose-700'}`;
+                badge.classList.remove('hidden');
+                setTimeout(() => badge.classList.add('hidden'), 2400);
+            }
+            if (gameState.san >= 75) gameState.playerMood = 'happy';
+            else if (gameState.san >= 45) gameState.playerMood = 'worried';
+            else gameState.playerMood = 'crying';
+            updateAllUI();
+        }
+
+        function modifyAffinity(npc, delta) {
+            if (!delta) return;
+            if (npc === 'lu') {
+                gameState.luAffinity = Math.max(0, Math.min(100, gameState.luAffinity + delta));
+                gameState.luMood = delta >= 0 ? 'happy' : 'worried';
+                showAffinityBadge('lu-delta-badge', delta);
+            } else {
+                gameState.jiangAffinity = Math.max(0, Math.min(100, gameState.jiangAffinity + delta));
+                gameState.jiangMood = delta >= 0 ? 'happy' : (gameState.jiangAffinity < 35 ? 'crying' : 'worried');
+                showAffinityBadge('jiang-delta-badge', delta);
+            }
+            updateAllUI();
+        }
+
+        function showAffinityBadge(elId, delta) {
+            const el = document.getElementById(elId);
+            if (!el) return;
+            el.textContent = delta > 0 ? `+${delta} ♥` : `${delta} 💔`;
+            el.className = `absolute top-3 right-3 text-xs font-bold px-2 py-0.5 rounded-md shadow-sm ${delta > 0 ? 'bg-emerald-100 text-emerald-800' : 'bg-rose-100 text-rose-700'}`;
+            el.classList.remove('hidden');
+            setTimeout(() => el.classList.add('hidden'), 2400);
+        }
+
+        function addLog(text, type = 'info') {
+            const list = document.getElementById('game-log-list');
+            if (!list) return;
+            const colorMap = {
+                good: 'bg-emerald-50 border-emerald-200 text-emerald-900',
+                bad: 'bg-rose-50 border-rose-200 text-rose-900',
+                info: 'bg-cream-50 border-cream-200 text-stone-700'
+            };
+            const div = document.createElement('div');
+            div.className = `p-2.5 rounded-xl border ${colorMap[type] || colorMap.info} flex items-start justify-between gap-2`;
+            div.innerHTML = `<span>${text}</span><span class="text-[10px] text-stone-400 shrink-0">${gameState.age}歲</span>`;
+            list.prepend(div);
+        }
+
+        let uiQueued = false;
+        function updateAllUI() {
+            if (uiQueued) return;
+            uiQueued = true;
+            requestAnimationFrame(() => { uiQueued = false; _updateAllUI(); });
+        }
+        function _updateAllUI() {
+            const c = gameState.char;
+            if (!c) return;
+
+            document.getElementById('header-round-badge').textContent = `回合 ${gameState.round} / ${gameState.maxRounds}`;
+            document.getElementById('board-age-display').textContent = `當前年齡：${gameState.age} 歲（第 ${gameState.round} / ${gameState.maxRounds} 回合）`;
+
+            const warnEl = document.getElementById('black-swan-warning');
+            if (!gameState.crisisTriggered) {
+                warnEl.innerHTML = `<i class="ph-fill ph-warning-circle"></i> 專屬重大劇情將於第 ${c.crisisRound} 回合降臨`;
+                warnEl.className = 'px-2.5 py-1 rounded-full bg-amber-100 text-amber-800 text-[11px] font-medium flex items-center gap-1';
+            } else {
+                warnEl.innerHTML = `<i class="ph-fill ph-check-circle"></i> 已歷經專屬重大事件考驗`;
+                warnEl.className = 'px-2.5 py-1 rounded-full bg-emerald-100 text-emerald-800 text-[11px] font-medium flex items-center gap-1';
+            }
+
+            document.getElementById('player-stage-tag').textContent = `${gameState.age} 歲 · ${c.title}`;
+            document.getElementById('player-stage-tag').className = `text-xs px-3 py-1 rounded-full font-medium ${c.tagColor}`;
+
+            const jobBadge = document.getElementById('player-job-badge');
+            if (gameState.isEmployed) {
+                jobBadge.innerHTML = `<i class="ph-fill ph-briefcase"></i> 在職中 (${formatMoney(c.salary)}/圈)`;
+                jobBadge.className = 'text-xs px-3 py-1 rounded-full bg-sky-100 text-sky-800 font-medium flex items-center gap-1';
+            } else {
+                jobBadge.innerHTML = `<i class="ph-fill ph-warning-octagon"></i> 失業中 (無月薪/需進修)`;
+                jobBadge.className = 'text-xs px-3 py-1 rounded-full bg-rose-100 text-rose-700 font-bold flex items-center gap-1 animate-pulse';
+            }
+
+            setAvatar('player-avatar-svg', c.id, gameState.playerMood);
+            document.getElementById('player-expression-pill').textContent = MOOD_LABELS[gameState.playerMood] || '😊 充滿幹勁';
+            document.getElementById('player-name-title').textContent = c.name;
+            document.getElementById('player-goal-text').textContent = `核心目標：${c.goal}`;
+
+            document.getElementById('stat-cash').textContent = formatMoney(gameState.cash);
+            document.getElementById('stat-cash').className = `font-bold text-base ${gameState.cash > 0 ? 'text-emerald-700' : 'text-rose-600'}`;
+            document.getElementById('stat-debt').textContent = formatMoney(gameState.debt);
+            document.getElementById('stat-policy-val').textContent = formatMoney(gameState.policyValue);
+
+            const cf = getPerLapCashflow();
+            const cfEl = document.getElementById('stat-cashflow');
+            cfEl.textContent = `${cf >= 0 ? '+' : ''}${formatMoney(cf)} /圈`;
+            cfEl.className = `font-bold ${cf >= 0 ? 'text-sky-700' : 'text-rose-600'}`;
+
+            // San Bar
+            document.getElementById('stat-san-text').textContent = `${gameState.san} / 100`;
+            const sanBar = document.getElementById('stat-san-bar');
+            const sanBadge = document.getElementById('san-status-badge');
+            sanBar.style.width = `${gameState.san}%`;
+            if (gameState.san >= 75) {
+                sanBar.className = 'h-full rounded-full bg-gradient-to-r from-emerald-400 to-cardif transition-all duration-500';
+                sanBadge.textContent = '✨ 歲月靜好';
+                sanBadge.className = 'text-[11px] px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800 font-bold';
+            } else if (gameState.san >= 45) {
+                sanBar.className = 'h-full rounded-full bg-gradient-to-r from-amber-400 to-orange-500 transition-all duration-500';
+                sanBadge.textContent = '😐 略感壓力';
+                sanBadge.className = 'text-[11px] px-2 py-0.5 rounded-full bg-amber-100 text-amber-800 font-bold';
+            } else {
+                sanBar.className = 'h-full rounded-full bg-gradient-to-r from-rose-500 to-red-600 transition-all duration-500';
+                sanBadge.textContent = '🚨 瀕臨崩潰';
+                sanBadge.className = 'text-[11px] px-2 py-0.5 rounded-full bg-rose-100 text-rose-700 font-bold';
+            }
+
+            // NPCs
+            setAvatar('game-npc-lu-avatar', 'lu', gameState.luMood);
+            document.getElementById('stat-lu-score').textContent = `${gameState.luAffinity} ♥`;
+            document.getElementById('stat-lu-bar').style.width = `${gameState.luAffinity}%`;
+            document.getElementById('stat-lu-perk').textContent = gameState.luAffinity >= 75
+                ? '✨ 已解鎖：購買法巴保單享 85 折優惠！'
+                : (gameState.luAffinity < 45 ? '⚠️ 好感偏低：投保需加收 10% 行政審核費' : '好感 ≥75 享保費 85 折；過低將加收諮詢費');
+
+            setAvatar('game-npc-jiang-avatar', 'jiang', gameState.jiangMood);
+            document.getElementById('jiang-role-label').textContent = c.jiangRole;
+            document.getElementById('stat-jiang-score').textContent = `${gameState.jiangAffinity} ♥`;
+            document.getElementById('stat-jiang-bar').style.width = `${gameState.jiangAffinity}%`;
+            document.getElementById('stat-jiang-perk').textContent = gameState.jiangAffinity < 35
+                ? '💔 關係瀕臨破裂！請盡快彌補伴侶與家庭安全感'
+                : '患難見真情，低於 35 將觸發關係破裂扣分';
+
+            // Defense & Policies
+            const defPct = getDefensePercentage();
+            document.getElementById('stat-defense-pct').textContent = `${defPct}%`;
+            document.getElementById('stat-defense-bar').style.width = `${defPct}%`;
+
+            const polList = document.getElementById('active-policies-list');
+            if (gameState.policies.length === 0) {
+                polList.innerHTML = `
+                    <div class="p-4 rounded-2xl bg-cream-50 border border-dashed border-cream-300 text-center text-xs text-stone-400">
+                        尚未配置任何法國巴黎人壽保單或醫療險。<br>點擊右上角「投保規劃」立即建立防護網！
+                    </div>`;
+            } else {
+                polList.innerHTML = gameState.policies.map(id => {
+                    const p = INSURANCE_PRODUCTS.find(item => item.id === id);
+                    return `
+                        <div class="p-3 rounded-xl bg-emerald-50/70 border border-emerald-200 flex items-center justify-between gap-2">
+                            <div>
+                                <div class="font-bold text-xs text-cardif-dark">${p.name}</div>
+                                <div class="text-[11px] text-stone-500">防護 +${p.defenseScore}% · 每圈保費 ${formatMoney(p.perLapPremium)}</div>
+                            </div>
+                            <i class="ph-fill ph-check-circle text-cardif text-lg shrink-0"></i>
+                        </div>
+                    `;
+                }).join('');
+            }
+
+            // Mobile Mini Bar
+            setAvatar('mobile-mini-avatar', c.id, gameState.playerMood);
+            document.getElementById('mobile-mini-name').textContent = c.name;
+            document.getElementById('mobile-mini-mood').textContent = MOOD_LABELS[gameState.playerMood];
+            document.getElementById('mobile-mini-cash').textContent = formatMoney(gameState.cash);
+            document.getElementById('mobile-mini-san').textContent = gameState.san;
+            document.getElementById('mobile-mini-def').textContent = `${defPct}%`;
+        }
+
+        function setAvatar(id, charId, mood) {
+            const el = document.getElementById(id);
+            if (!el) return;
+            const key = charId + '_' + mood;
+            if (el.dataset.k === key) return;
+            el.dataset.k = key;
+            el.innerHTML = renderCharacterSVG(charId, mood);
+        }
+
+        function renderDiceSVG(point = 6, rolling = false) {
+            const dotsMap = {
+                1: [[50, 50]],
+                2: [[30, 30], [70, 70]],
+                3: [[28, 28], [50, 50], [72, 72]],
+                4: [[30, 30], [70, 30], [30, 70], [70, 70]],
+                5: [[28, 28], [72, 28], [50, 50], [28, 72], [72, 72]],
+                6: [[30, 26], [70, 26], [30, 50], [70, 50], [30, 74], [70, 74]]
+            };
+            const pts = dotsMap[point] || dotsMap[6];
+            const dotsHtml = pts.map(([cx, cy]) => `<circle cx="${cx}" cy="${cy}" r="8.5" fill="${point === 1 || point === 4 ? '#E11D48' : '#00915A'}"/>`).join('');
+            return `
+                <svg viewBox="0 0 100 100" class="w-full h-full ${rolling ? 'dice-rolling' : ''}">
+                    <rect x="6" y="6" width="88" height="88" rx="22" fill="#FFFFFF" stroke="#E2D5B8" stroke-width="5"/>
+                    ${dotsHtml}
+                </svg>
+            `;
+        }
+
+        function renderMonopolyBoard(lastPoint = null) {
+            const grid = document.getElementById('monopoly-grid');
+            if (!grid || !gameState.char) return;
+            const boardKey = [gameState.position, gameState.playerMood, gameState.char.id, lastPoint, gameState.cash <= 0].join('|');
+            if (grid.dataset.k === boardKey && !grid.dataset.force) return;
+            grid.dataset.k = boardKey;
+
+            let html = '';
+            BOARD_TILES.forEach((tile, idx) => {
+                const coord = RING_COORDS[idx];
+                const isCurrent = gameState.position === idx;
+                html += `
+                    <div id="board-tile-${idx}" style="grid-row: ${coord.r}; grid-column: ${coord.c};"
+                        class="tile-box relative rounded-2xl border-2 p-1.5 sm:p-2 flex flex-col items-center justify-between text-center select-none ${tile.color} ${isCurrent ? 'tile-active bg-white ring-2 ring-cardif' : 'opacity-95'}">
+                        <div class="w-full flex items-center justify-between text-[10px] font-bold opacity-75 px-0.5">
+                            <span>#${idx + 1}</span>
+                            <i class="ph-fill ${tile.icon} text-xs sm:text-sm"></i>
+                        </div>
+                        <div class="font-bold text-[11px] sm:text-xs leading-tight my-0.5">${tile.name}</div>
+                        <div class="tile-sub text-[9px] sm:text-[10px] opacity-75 hidden sm:block">${tile.sub}</div>
+                        ${isCurrent ? `
+                            <div class="absolute -top-2.5 -right-2 w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-white border-2 border-cardif shadow-md p-0.5 z-20 " title="目前位置">
+                                ${renderCharacterSVG(gameState.char.id, gameState.playerMood)}
+                            </div>
+                        ` : ''}
+                    </div>
+                `;
+            });
+
+            const curTile = BOARD_TILES[gameState.position];
+            html += `
+                <div class="board-center-hub rounded-3xl bg-gradient-to-b from-cream-50 to-cream-100 border-2 border-cream-300 p-2 sm:p-3 flex flex-col items-center justify-between text-center shadow-inner overflow-hidden">
+                    <div class="space-y-0.5">
+                        <span class="text-[11px] font-bold text-cardif-dark px-2.5 py-0.5 rounded-full bg-cardif-light">📍 目前位於：#${gameState.position + 1} ${curTile.name}</span>
+                        <p class="hidden sm:block text-[11px] text-stone-500 mt-1">${gameState.cash <= 0 ? '⚠️ 現金為 $0，無法進行現金購買活動' : '點擊下方骰子前進，體驗專屬財務人生'}</p>
+                    </div>
+
+                    <div class="my-1 sm:my-2 flex flex-col items-center">
+                        <div id="center-dice-Visual" onclick="rollDiceStep()" class="w-12 h-12 sm:w-16 sm:h-16 cursor-pointer hover:scale-105 transition">
+                            ${renderDiceSVG(lastPoint || 6, false)}
+                        </div>
+                        ${lastPoint ? `<span class="mt-1 text-xs font-bold text-cardif-dark bg-emerald-100 px-2.5 py-0.5 rounded-full">上次擲出：${lastPoint} 點</span>` : ''}
+                    </div>
+
+                    <button id="btn-roll-main" onclick="rollDiceStep()" class="w-full max-w-[210px] py-2 px-3 rounded-2xl bg-gradient-to-r from-cardif to-emerald-600 hover:from-cardif-dark hover:to-emerald-700 text-white font-bold text-xs sm:text-sm shadow-md hover:shadow-lg transition flex items-center justify-center gap-2">
+                        <i class="ph-fill ph-dice-five text-lg"></i>
+                        <span>擲骰子前進下一回合</span>
+                    </button>
+                </div>
+            `;
+
+            grid.innerHTML = html;
+        }
+
+        function rollDiceStep() {
+            if (gameState.isRolling || gameState.isMoving) return;
+            if (document.querySelector("#modal-dialogue.flex, #modal-shop.flex, #modal-notification.flex, #modal-ending.flex, #modal-guide.flex")) return;
+            gameState.isRolling = true;
+
+            const overlay = document.getElementById('dice-overlay');
+            const box = document.getElementById('dice-overlay-box');
+            const title = document.getElementById('dice-overlay-title');
+            const sub = document.getElementById('dice-overlay-sub');
+
+            overlay.classList.remove('hidden');
+            overlay.classList.add('flex');
+            title.textContent = '命運之骰轉動中...';
+            sub.textContent = '看看這回合會踏上哪個人生步道';
+
+            let ticks = 0;
+            const rollTimer = setInterval(() => {
+                const tempPt = Math.floor(Math.random() * 6) + 1;
+                box.innerHTML = renderDiceSVG(tempPt, true);
+                ticks++;
+                if (ticks >= 10) {
+                    clearInterval(rollTimer);
+                    const finalPoint = Math.floor(Math.random() * 6) + 1;
+                    box.innerHTML = `<div class="w-full h-full animate-dice-burst">${renderDiceSVG(finalPoint, false)}</div>`;
+                    title.textContent = `🎉 擲出了 ${finalPoint} 點！`;
+                    const targetIdx = (gameState.position + finalPoint) % BOARD_TILES.length;
+                    sub.textContent = `準備前往：#${targetIdx + 1}【${BOARD_TILES[targetIdx].name}】`;
+
+                    setTimeout(() => {
+                        overlay.classList.add('hidden');
+                        overlay.classList.remove('flex');
+                        animateTokenSteps(finalPoint);
+                    }, 850);
+                }
+            }, 85);
+        }
+
+        function animateTokenSteps(steps) {
+            let remaining = steps;
+            let passedStart = false;
+            gameState.isMoving = true;
+
+            stepIntervalId = setInterval(() => {
+                gameState.position = (gameState.position + 1) % BOARD_TILES.length;
+                if (gameState.position === 0) {
+                    passedStart = true;
+                }
+                renderMonopolyBoard(steps);
+                const activeEl = document.getElementById(`board-tile-${gameState.position}`);
+                if (activeEl) activeEl.classList.add('tile-stepping');
+
+                remaining--;
+                if (remaining <= 0) {
+                    clearInterval(stepIntervalId);
+                    gameState.isMoving = false;
+                    gameState.round++;
+                    gameState.age++;
+                    updateAllUI();
+
+                    if (passedStart) {
+                        processPassStartPayday(() => {
+                            afterMoveEventsCheck();
+                        });
+                    } else {
+                        afterMoveEventsCheck();
+                    }
+                }
+            }, 220);
+        }
+
+        function processPassStartPayday(callback) {
+            const c = gameState.char;
+            let salaryIn = 0;
+            let reemployedNow = false;
+
+            if (!gameState.isEmployed && gameState.reemployChance > 0) {
+                if (Math.random() * 100 <= gameState.reemployChance) {
+                    gameState.isEmployed = true;
+                    gameState.reemployChance = 0;
+                    reemployedNow = true;
+                    modifySan(12);
+                }
+            }
+
+            if (gameState.isEmployed) {
+                salaryIn = c.salary;
+            }
+
+            const livingOut = c.livingCost;
+            const premiumsOut = gameState.policies.reduce((acc, id) => {
+                const p = INSURANCE_PRODUCTS.find(item => item.id === id);
+                return acc + (p ? p.perLapPremium : 0);
+            }, 0);
+
+            const debtRepay = gameState.debt > 0 ? Math.min(gameState.debt, c.debtPayment) : 0;
+
+            // Policy yield growth
+            const ownedVal = gameState.policies.map(id => INSURANCE_PRODUCTS.find(p => p.id === id)).filter(p => p && p.accountValueAdd > 0);
+            const wSum = ownedVal.reduce((a, p) => a + p.accountValueAdd, 0);
+            const avgRate = wSum ? ownedVal.reduce((a, p) => a + p.accountValueAdd * p.yieldRate, 0) / wSum : 0;
+            const yieldGain = Math.round(gameState.policyValue * avgRate);
+            gameState.policyValue += yieldGain;
+
+            const netChange = salaryIn - livingOut - premiumsOut - debtRepay;
+            if (gameState.cash + netChange >= 0) {
+                gameState.cash += netChange;
+                gameState.debt = Math.max(0, gameState.debt - debtRepay);
+            } else {
+                const deficit = Math.abs(gameState.cash + netChange);
+                gameState.cash = 0;
+                gameState.debt = Math.max(0, gameState.debt - debtRepay) + deficit;
+            }
+
+            let msgLines = [];
+            if (reemployedNow) {
+                msgLines.push(`🎉 【重返職場喜訊】進修展現成效，你已順利復職並恢復領取月薪！`);
+            }
+            if (gameState.isEmployed) {
+                msgLines.push(`💰 領取月薪：+${formatMoney(salaryIn)}`);
+                if (getDefensePercentage() >= 50) modifySan(4);
+                else if (gameState.debt > c.salary * 10) modifySan(-4);
+            } else {
+                msgLines.push(`⚠️ 失業狀態：無法領取月薪 ($0)，請踩中「職涯與進修院/求職培訓中心」重返職場！`);
+                modifySan(-10);
+                modifyAffinity('jiang', -5);
+            }
+
+            msgLines.push(`🏠 固定生活費扣除：-${formatMoney(livingOut)}`);
+            if (debtRepay > 0) {
+                msgLines.push(`🏦 償還貸款/借款 (${c.debtName})：-${formatMoney(debtRepay)}（剩餘總負債 ${formatMoney(gameState.debt)}）`);
+            } else {
+                msgLines.push(`✨ 貸款狀態：目前已無任何貸款負債！`);
+            }
+            if (premiumsOut > 0) {
+                msgLines.push(`🛡️ 續期保單保費扣除：-${formatMoney(premiumsOut)}`);
+            }
+            if (yieldGain > 0) {
+                msgLines.push(`📈 法巴投資型/年金保單帳戶增值：+${formatMoney(yieldGain)}`);
+            }
+            msgLines.push(`📊 本次結算後可用現金：${formatMoney(gameState.cash)}`);
+
+            addLog(`🔔 【發薪與還款通知】月薪 +${formatMoney(salaryIn)}，生活費 -${formatMoney(livingOut)}，還貸款 -${formatMoney(debtRepay)}，保費 -${formatMoney(premiumsOut)}。`, gameState.isEmployed ? 'good' : 'bad');
+            updateAllUI();
+
+            showNotificationModal(
+                gameState.isEmployed ? '💰 發薪日與貸款償還通知' : '🚨 失業無薪與帳單扣款通知',
+                msgLines.join('\n'),
+                callback
+            );
+        }
+
+        function showNotificationModal(title, message, callback) {
+            gameState.afterNotificationCallback = callback || null;
+            document.getElementById('notif-title').textContent = title;
+            document.getElementById('notif-message').textContent = message;
+            const modal = document.getElementById('modal-notification');
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+        }
+
+        function closeNotificationModal() {
+            const modal = document.getElementById('modal-notification');
+            modal.classList.add('hidden');
+            modal.classList.remove('flex');
+            const cb = gameState.afterNotificationCallback;
+            gameState.afterNotificationCallback = null;
+            if (typeof cb === 'function') cb();
+        }
+
+        function afterMoveEventsCheck() {
+            // Check if game ended
+            if (gameState.round > gameState.maxRounds || gameState.san <= 0) {
+                gameState.isRolling = false;
+                showEndingReport();
+                return;
+            }
+
+            // Check relationship breakup crisis if Jiang affinity < 30
+            if (gameState.jiangAffinity < 30 && !gameState.breakupWarned) {
+                gameState.breakupWarned = true;
+                triggerJiangBreakupCrisis();
+                return;
+            }
+
+            // Check role-specific major crisis on round 5
+            if (!gameState.crisisTriggered && gameState.round >= gameState.char.crisisRound) {
+                triggerRoleMajorCrisis();
+                return;
+            }
+
+            // Otherwise trigger current tile effect
+            triggerTileEvent(BOARD_TILES[gameState.position]);
+        }
+
+        function triggerJiangBreakupCrisis() {
+            openDialogueModal({
+                category: '💔 關係破裂警告',
+                location: '冰冷的客廳',
+                title: '江禾收拾行李準備離開',
+                context: '因為多次忽視風險、借錢或缺乏對未來的保障規劃，江禾對這段關係的安全感已經降至冰點。',
+                npc: 'jiang',
+                npcMood: 'crying',
+                playerMood: 'crying',
+                speech: '我們不能總是靠運氣過日子……每次遇到事情都沒有保障，還要跟著提心吊膽。如果你還是不願好好規劃未來，我們先分開冷靜一下吧。',
+                choices: [
+                    {
+                        text: '真誠道歉並承諾立即配置法巴保障，挽回江禾 (江禾 +15，生活滿意度 -8，前往法巴理財中心)',
+                        action: () => {
+                            modifyAffinity('jiang', 15);
+                            modifySan(-8);
+                            addLog('💔 江禾提出分開警告，你誠懇道歉並承諾補強保障。', 'bad');
+                            openInsuranceShop(false);
+                        }
+                    },
+                    {
+                        text: '冷漠回應：「沒錢我也沒辦法啊！」(江禾 -15，生活滿意度 -20)',
+                        action: () => {
+                            modifyAffinity('jiang', -15);
+                            modifySan(-20);
+                            addLog('⚡ 你與江禾爆發激烈爭執，關係瀕臨徹底決裂！', 'bad');
+                        }
+                    }
+                ]
+            });
+        }
+
+        function triggerSpecialCrisisNow() {
+            if (gameState.crisisTriggered) {
+                showNotificationModal('✨ 已完成專屬重大考驗', '本角色專屬的重大人生考驗事件已經體驗過囉！請繼續擲骰子完成旅程。');
+                return;
+            }
+            triggerRoleMajorCrisis();
+        }
+
+        function triggerRoleMajorCrisis() {
+            gameState.crisisTriggered = true;
+            updateAllUI();
+            const cid = gameState.char.id;
+
+            if (cid === 'fresh') {
+                const hasCover = hasPolicy('accident_med') || hasPolicy('cardif_vul_micro');
+                openDialogueModal({
+                    category: '🚨 角色專屬危機 · 小資新鮮人',
+                    location: '通勤十字路口 / 醫院急診室',
+                    title: '突發車禍骨折與一個月休養停薪',
+                    context: '林小葵騎車上班途中遭違規車輛擦撞導致小腿骨折，需休養一個月，醫療費與修車費共 $80,000，且當月工作被迫中斷！',
+                    npc: hasCover ? 'lu' : 'jiang',
+                    npcMood: hasCover ? 'relieved' : 'worried',
+                    playerMood: hasCover ? 'relieved' : 'crying',
+                    speech: hasCover
+                        ? '陸修遠第一時間趕到病房：「小葵別擔心！幸好當初有幫妳規劃意外實支實付與法巴小額保單，這 $80,000 醫藥費全免，還有休養補貼 $15,000！」'
+                        : '江禾匆忙趕到醫院嘆了口氣：「$80,000 我先幫妳墊付吧，但這筆錢算妳跟我借的，妳要好好想想怎麼還，不要老是月光又不買保險了……」',
+                    choices: hasCover ? [
+                        {
+                            text: '申請理賠！$80,000 全額理賠免自付，再領 $15,000 休養津貼 (陸修遠 +12，江禾 +8，滿意度 +12)',
+                            action: () => {
+                                modifyCash(15000);
+                                gameState.coveredLossTotal += 80000;
+                                modifyAffinity('lu', 12);
+                                modifyAffinity('jiang', 8);
+                                modifySan(12);
+                                addLog('🛡️ 【專屬事件】車禍骨折 $80,000 由保險全額理賠，並獲 $15,000 休養補貼！', 'good');
+                            }
+                        }
+                    ] : [
+                        {
+                            text: '無保險，向江禾借錢墊付 $80,000 (計入貸款負債 +$80,000，江禾好感 -15，滿意度 -25)',
+                            action: () => {
+                                gameState.debt += 80000;
+                                gameState.uncoveredLossTotal += 80000;
+                                modifyAffinity('jiang', -15);
+                                modifySan(-25);
+                                addLog('🚨 【專屬事件】車禍無保險，向江禾借款 $80,000（已計入貸款負債），江禾好感 -15！', 'bad');
+                            }
+                        }
+                    ]
+                });
+            } else if (cid === 'single') {
+                const hasCover = hasPolicy('cardif_vul_ci');
+                openDialogueModal({
+                    category: '🚨 角色專屬危機 · 黃金單身貴族',
+                    location: '科技園區 / 醫學中心',
+                    title: '科技業裁員潮與自體免疫重病雙重風暴',
+                    context: '陳子昂因長期高壓工作突發自體免疫重大傷病，需自費標靶治療 $500,000；同時公司宣布部門縮編裁員，你瞬間面臨「失業狀態」！',
+                    npc: 'lu',
+                    npcMood: hasCover ? 'confident' : 'worried',
+                    playerMood: hasCover ? 'relieved' : 'shocked',
+                    speech: hasCover
+                        ? '陸修遠握緊你的手：「子昂，你之前的法巴投資型保單附加了重大傷病條款！$500,000 理賠金即刻入帳讓你安心治療，而且保單帳戶價值還能幫你支付求職進修費，下回合就能重返職場！」'
+                        : '陸修遠焦急地看著報告：「你沒有重大傷病險，現在公司又裁員……你只能在股市最低點忍痛賤賣股票並背負債務來湊這 $500,000 醫藥費了！」',
+                    choices: hasCover ? [
+                        {
+                            text: '啟動法巴重傷理賠 $500,000，並由保單價值安排獵頭進修 (失業復職率 100%，陸修遠 +20，滿意度 +15)',
+                            action: () => {
+                                gameState.coveredLossTotal += 500000;
+                                gameState.isEmployed = false;
+                                gameState.reemployChance = 100;
+                                modifyAffinity('lu', 20);
+                                modifyAffinity('jiang', 10);
+                                modifySan(15);
+                                addLog('🛡️ 【專屬事件】法巴投資型保單+重傷理賠 $500,000，並獲 100% 下回復職保障！', 'good');
+                            }
+                        }
+                    ] : [
+                        {
+                            text: '被迫在低點賤賣資產支付 $500,000，且陷入失業無薪狀態 (失業中，江禾 -15，滿意度 -35)',
+                            action: () => {
+                                deductCashWithLoanFallback(500000, '自體免疫重病自費療程');
+                                gameState.uncoveredLossTotal += 500000;
+                                gameState.isEmployed = false;
+                                gameState.reemployChance = 0;
+                                modifyAffinity('jiang', -15);
+                                modifySan(-35);
+                                addLog('🚨 【專屬事件】無重傷險慘賠 $500,000 且陷入失業狀態！請前往求職培訓格進修找工作。', 'bad');
+                            }
+                        }
+                    ]
+                });
+            } else if (cid === 'family') {
+                const hasCover = hasPolicy('cardif_mortgage');
+                openDialogueModal({
+                    category: '🚨 角色專屬危機 · 三明治家庭支柱',
+                    location: '工廠視察現場 / 加護病房',
+                    title: '家庭支柱工安重傷失能 vs. 千萬房貸危機',
+                    context: '張家豪在工廠視察時發生嚴重工安意外導致失能，不僅失去工作能力，每月還需復健長照費用，而高達 $4,500,000 的房貸依然每期逼近！',
+                    npc: 'jiang',
+                    npcMood: hasCover ? 'crying' : 'crying',
+                    playerMood: hasCover ? 'relieved' : 'crying',
+                    speech: hasCover
+                        ? '江禾喜極而泣緊緊握住你的手：「老公，還好你當初聽陸修遠的話堅持買了【法巴房貸壽險】！理賠金直接幫我們把剩餘房貸全部還清歸零了，還有 $200,000 失能扶助金，我們的家保住了！」'
+                        : '江禾崩潰痛哭：「醫療費勉強湊齊，但你現在沒薪水了，房貸根本付不出來，銀行下個月就要查封拍賣我們的房子了，我和孩子到底要住哪裡？！」',
+                    choices: hasCover ? [
+                        {
+                            text: '啟動【法巴房貸壽險】清償全額房貸（負債歸零！）並領取 $200,000 扶助金 (江禾 +30，陸修遠 +20，滿意度 +20)',
+                            action: () => {
+                                gameState.coveredLossTotal += gameState.debt + 200000;
+                                gameState.debt = 0;
+                                modifyCash(200000);
+                                modifyAffinity('jiang', 30);
+                                modifyAffinity('lu', 20);
+                                modifySan(20);
+                                addLog('🏡 【專屬事件】法巴房貸壽險發揮「留愛不留債」神威！全額清償房貸，江禾好感度暴增 +30！', 'good');
+                            }
+                        }
+                    ] : [
+                        {
+                            text: '無房貸壽險，房屋遭法拍查封、家庭瀕臨破碎 (現金歸零、失業中、江禾好感歸零，滿意度 -45)',
+                            action: () => {
+                                gameState.uncoveredLossTotal += 1500000;
+                                gameState.cash = 0;
+                                gameState.isEmployed = false;
+                                gameState.reemployChance = 0;
+                                gameState.jiangAffinity = 0;
+                                gameState.assetValue = 0;
+                                modifySan(-45);
+                                addLog('💥 【專屬事件】無房貸壽險導致房屋遭查封法拍，江禾崩潰離去，陷入失業與絕境！', 'bad');
+                            }
+                        }
+                    ]
+                });
+            } else {
+                const hasCover = hasPolicy('cardif_va_retire') && hasPolicy('ltc_care');
+                const hasPartial = hasPolicy('cardif_va_retire') || hasPolicy('ltc_care');
+                openDialogueModal({
+                    category: '🚨 角色專屬危機 · 準退休規劃者',
+                    location: '財經新聞台 / 神經內科診間',
+                    title: '全球金融海嘯資產腰斬＆老伴江禾失智長照',
+                    context: '全球爆發金融海嘯導致股市腰斬，與此同時，相伴半生的江禾被診斷出早期失智症，需要聘請全日看護（總計衝擊 $600,000）。',
+                    npc: 'lu',
+                    npcMood: hasCover ? 'confident' : 'worried',
+                    playerMood: hasCover ? 'relieved' : 'crying',
+                    speech: hasCover
+                        ? '陸修遠溫和地安撫妳：「美娟姐請放心！您的【法巴變額年金保險】有下檔保護與穩定撥回機制，完全不受這次股災影響，而且長照險全額支應了江禾的看護費用 $600,000！」'
+                        : '看著腰斬的股票對帳單與高昂的長照看護收據，陳美娟老淚縱橫，退休計畫被迫中斷，甚至得在求職中心重新奔波找工作……',
+                    choices: hasCover ? [
+                        {
+                            text: '法巴變額年金＋長照險雙重守護！資產毫髮無傷並獲 $80,000 撥回看護金 (江禾 +25，陸修遠 +20，滿意度 +18)',
+                            action: () => {
+                                modifyCash(80000);
+                                gameState.coveredLossTotal += 600000;
+                                modifyAffinity('jiang', 25);
+                                modifyAffinity('lu', 20);
+                                modifySan(18);
+                                addLog('🛡️ 【專屬事件】法巴變額年金與長照險完美抵禦股災與失智看護支出！', 'good');
+                            }
+                        }
+                    ] : (hasPartial ? [
+                        {
+                            text: '僅配置部分保障，抵銷一半衝擊但仍需自付 $250,000 (江禾 +5，陸修遠 +8，滿意度 -10)',
+                            action: () => {
+                                deductCashWithLoanFallback(250000, '長照或股災部分損失');
+                                gameState.coveredLossTotal += 350000;
+                                gameState.uncoveredLossTotal += 250000;
+                                modifyAffinity('jiang', 5);
+                                modifyAffinity('lu', 8);
+                                modifySan(-10);
+                                addLog('⚠️ 【專屬事件】部分保險發揮作用，但仍自付 $250,000 差額。', 'info');
+                            }
+                        }
+                    ] : [
+                        {
+                            text: '全押高風險股票且無長照險！資產重創 $600,000 並被迫退回失業找工作狀態 (滿意度 -40，江禾 -20)',
+                            action: () => {
+                                deductCashWithLoanFallback(600000, '金融海嘯腰斬與失智看護費');
+                                gameState.uncoveredLossTotal += 600000;
+                                gameState.isEmployed = false;
+                                gameState.reemployChance = 0;
+                                modifyAffinity('jiang', -20);
+                                modifySan(-40);
+                                addLog('🚨 【專屬事件】股災與長照雙重打擊痛失 $600,000，被迫延後退休重新求職！', 'bad');
+                            }
+                        }
+                    ])
+                });
+            }
+        }
+
+        function triggerTileEvent(tile) {
+            const c = gameState.char;
+            const noCash = gameState.cash <= 0;
+
+            if (tile.type === 'start') {
+                gameState.isRolling = false;
+                return;
+            }
+
+            if (tile.type === 'shop') {
+                gameState.shopOpenedFromTile = true;
+                gameState.boughtInCurrentShopVisit = false;
+                gameState.isRolling = false;
+                openInsuranceShop(true);
+                return;
+            }
+
+            if (tile.type === 'training') {
+                if (!gameState.isEmployed) {
+                    openDialogueModal({
+                        category: '🎓 求職培訓與復職中心',
+                        location: tile.name,
+                        title: '失業期間的職涯重塑機會',
+                        context: '你目前處於「失業狀態」，經過起點無法領取月薪。透過專業進修，可以讓你在下次經過發薪格時重新找回工作！',
+                        npc: 'lu',
+                        npcMood: 'confident',
+                        playerMood: 'worried',
+                        speech: '危機就是轉機！建議投入一筆進修費用提升競爭力，千萬別在家坐吃山空或向江禾伸手借錢。',
+                        choices: [
+                            {
+                                text: noCash ? '🚫 現金不足 ($0)，無法報名保證復職班' : '花費 $25,000 報名【高階獵頭保證復職班】(立即恢復在職狀態！滿意度 +12，陸修遠 +8)',
+                                disabled: noCash || gameState.cash < 25000,
+                                action: () => {
+                                    modifyCash(-25000);
+                                    gameState.isEmployed = true;
+                                    gameState.reemployChance = 100;
+                                    modifySan(12);
+                                    modifyAffinity('lu', 8);
+                                    addLog('🎓 完成高階進修，成功重返職場恢復月薪！', 'good');
+                                }
+                            },
+                            {
+                                text: noCash ? '🚫 現金不足 ($0)，無法報名基礎進修班' : '花費 $10,000 報名【基礎線上進修】(下次經過起點 60% 機率恢復工作，滿意度 +5)',
+                                disabled: noCash || gameState.cash < 10000,
+                                action: () => {
+                                    modifyCash(-10000);
+                                    gameState.reemployChance = 60;
+                                    modifySan(5);
+                                    addLog('📚 完成基礎進修，下次經過起點有 60% 機率復職。', 'info');
+                                }
+                            },
+                            {
+                                text: '不想花錢進修，向江禾開口借 $15,000 付生活費 (負債 +$15,000，江禾好感 -15，滿意度 -8)',
+                                action: () => {
+                                    gameState.debt += 15000;
+                                    modifyCash(15000);
+                                    modifyAffinity('jiang', -15);
+                                    modifySan(-8);
+                                    addLog('⚠️ 逃避進修並向江禾借錢 $15,000（計入貸款），江禾非常失望。', 'bad');
+                                }
+                            }
+                        ]
+                    });
+                } else {
+                    openDialogueModal({
+                        category: '☕ 職涯充電學院',
+                        location: tile.name,
+                        title: '在職進修與身心放鬆',
+                        context: `你目前工作穩定（月薪 ${formatMoney(c.salary)}）。來到職涯學院，你可以選擇考取專業證照加薪，或喝杯手沖咖啡放鬆身心。`,
+                        npc: 'lu',
+                        npcMood: 'happy',
+                        playerMood: 'happy',
+                        speech: '工作穩定時更值得投資自己！考取跨領域證照能直接提升你的本業月薪喔。',
+                        choices: [
+                            {
+                                text: noCash || gameState.cash < 15000 ? '🚫 現金不足 $15,000 無法報考證照' : '花費 $15,000 考取高階專業證照 (永久提升月薪 +$5,000！陸修遠 +6，滿意度 +6)',
+                                disabled: noCash || gameState.cash < 15000,
+                                action: () => {
+                                    modifyCash(-15000);
+                                    gameState.char.salary += 5000;
+                                    modifyAffinity('lu', 6);
+                                    modifySan(6);
+                                    addLog(`📈 考取專業證照，每圈月薪永久提升至 ${formatMoney(gameState.char.salary)}！`, 'good');
+                                }
+                            },
+                            {
+                                text: '免費參加心靈講座與手沖咖啡時光 (生活滿意度 +12)',
+                                action: () => {
+                                    modifySan(12);
+                                    addLog('☕ 在學院享受片刻寧靜，生活滿意度 +12。', 'good');
+                                }
+                            }
+                        ]
+                    });
+                }
+                return;
+            }
+
+            if (tile.type === 'npc_lu') {
+                openDialogueModal({
+                    category: '🍵 財務管家邂逅',
+                    location: tile.name,
+                    title: '陸修遠的專屬資產健檢時光',
+                    context: '陸修遠帶著最新的法巴市場研究報告與熱茶與你會面，關心你近期的財務配置與生活壓力。',
+                    npc: 'lu',
+                    npcMood: 'happy',
+                    playerMood: 'happy',
+                    speech: `目前你的風險防護力為 ${getDefensePercentage()}%。只要我們的默契（好感度）達到 75 以上，我就能幫你申請法巴保單 85 折專案優惠！`,
+                    choices: [
+                        {
+                            text: '認真與陸修遠討論資產配置並打開保單規劃 (陸修遠好感 +12，滿意度 +6)',
+                            action: () => {
+                                modifyAffinity('lu', 12);
+                                modifySan(6);
+                                openInsuranceShop(false);
+                            }
+                        },
+                        {
+                            text: '不耐煩地打斷他：「你一直推銷保險是不是只想賺我佣金？」(陸修遠好感 -18，滿意度 -5)',
+                            action: () => {
+                                modifyAffinity('lu', -18);
+                                modifySan(-5);
+                                addLog('💢 你無禮質疑陸修遠的專業，陸修遠好感度大幅下降 -18！', 'bad');
+                            }
+                        }
+                    ]
+                });
+                return;
+            }
+
+            if (tile.type === 'npc_jiang') {
+                openDialogueModal({
+                    category: '💝 摯愛伴侶/摯友互動',
+                    location: tile.name,
+                    title: `與${c.jiangRole}「江禾」的重要約定`,
+                    context: `今天是你們約好共度晚餐的日子，江禾看著你的眼神裡帶著期待，也想聊聊彼此對未來的安全感。`,
+                    npc: 'jiang',
+                    npcMood: 'happy',
+                    playerMood: 'happy',
+                    speech: `最近看你為了財務這麼忙，如果我們有完善的保險當後盾，是不是就能更放心享受生活了？今天要一起吃頓溫馨晚餐嗎？`,
+                    choices: [
+                        {
+                            text: noCash || gameState.cash < 8000 ? '🚫 現金不足 $8,000，無法請江禾吃大餐' : '花費 $8,000 準備驚喜晚餐並分享法巴保障規劃 (江禾好感 +14，滿意度 +14)',
+                            disabled: noCash || gameState.cash < 8000,
+                            action: () => {
+                                modifyCash(-8000);
+                                modifyAffinity('jiang', 14);
+                                modifySan(14);
+                                addLog('💖 與江禾共度溫馨紀念晚餐，感情與生活滿意度雙雙升溫！', 'good');
+                            }
+                        },
+                        {
+                            text: '不花錢，陪江禾在河堤散步談心 (江禾好感 +6，滿意度 +6)',
+                            action: () => {
+                                modifyAffinity('jiang', 6);
+                                modifySan(6);
+                                addLog('🌙 與江禾在河堤散步談心，度過平淡溫暖的夜晚。', 'info');
+                            }
+                        },
+                        {
+                            text: '臨時放江禾鴿子，還向江禾借 $20,000 去追買短線飆股 (負債 +$20,000，江禾好感 -20，陸修遠 -8)',
+                            action: () => {
+                                gameState.debt += 20000;
+                                modifyCash(20000);
+                                modifyAffinity('jiang', -20);
+                                modifyAffinity('lu', -8);
+                                modifySan(-6);
+                                addLog('💔 放江禾鴿子還借錢 $20,000（計入貸款），江禾傷透了心 (-20)！', 'bad');
+                            }
+                        }
+                    ]
+                });
+                return;
+            }
+
+            if (tile.type === 'chance') {
+                const pool = ROLE_CHANCE_EVENTS[c.id] || ROLE_CHANCE_EVENTS.fresh;
+                const ev = pool[Math.floor(Math.random() * pool.length)];
+                openDialogueModal({
+                    category: `🍀 機會事件（${c.title}專屬）`,
+                    location: tile.name,
+                    title: ev.title,
+                    context: ev.context,
+                    npc: ev.npc,
+                    npcMood: ev.npcMood,
+                    playerMood: ev.playerMood,
+                    speech: ev.speech,
+                    choices: ev.choices
+                });
+                return;
+            }
+
+            if (tile.type === 'fate') {
+                const pool = ROLE_FATE_EVENTS[c.id] || ROLE_FATE_EVENTS.fresh;
+                const ev = pool[Math.floor(Math.random() * pool.length)];
+                openDialogueModal({
+                    category: `⚡ 命運事件（${c.title}專屬）`,
+                    location: tile.name,
+                    title: ev.title,
+                    context: ev.context,
+                    npc: 'lu',
+                    npcMood: getDefensePercentage() >= 50 ? 'confident' : 'worried',
+                    playerMood: getDefensePercentage() >= 50 ? 'relieved' : 'shocked',
+                    speech: getDefensePercentage() >= 50
+                        ? '別慌！我們之前配置的保險防護網能幫你大幅減輕這次突發衝擊！'
+                        : '糟糕……因為目前保障不足，這次突發事件恐怕得動用你的現金或轉為貸款負債了。',
+                    choices: ev.renderChoices()
+                });
+            }
+        }
+
+        function openDialogueModal(cfg) {
+            const modal = document.getElementById('modal-dialogue');
+            const card = document.getElementById('modal-dialogue-card');
+            document.getElementById('dialogue-category').textContent = cfg.category || '劇情事件';
+            document.getElementById('dialogue-location-tag').textContent = cfg.location || '人生步道';
+            document.getElementById('dialogue-title').textContent = cfg.title || '';
+            document.getElementById('dialogue-context').textContent = cfg.context || '';
+
+            const pMood = cfg.playerMood || gameState.playerMood;
+            document.getElementById('modal-player-avatar').innerHTML = renderCharacterSVG(gameState.char.id, pMood);
+            document.getElementById('modal-player-name').textContent = gameState.char.name;
+            document.getElementById('modal-player-mood').textContent = MOOD_LABELS[pMood];
+
+            const npcId = cfg.npc || 'lu';
+            const nMood = cfg.npcMood || 'happy';
+            document.getElementById('modal-npc-avatar').innerHTML = renderCharacterSVG(npcId, nMood);
+            document.getElementById('modal-npc-name').textContent = npcId === 'lu' ? '陸修遠' : '江禾';
+            document.getElementById('modal-npc-mood').textContent = MOOD_LABELS[nMood];
+            document.getElementById('dialogue-speaker-label').textContent = `${npcId === 'lu' ? '陸修遠' : '江禾'} 說：`;
+
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+            card.classList.remove('animate-pop-bounce');
+            void card.offsetWidth;
+            card.classList.add('animate-pop-bounce');
+
+            const speechEl = document.getElementById('dialogue-speech-text');
+            if (typewriterTimer) clearInterval(typewriterTimer);
+            speechEl.textContent = '';
+            const fullText = cfg.speech || '';
+            let i = 0;
+            typewriterTimer = setInterval(() => {
+                speechEl.textContent += fullText.charAt(i);
+                i++;
+                if (i >= fullText.length) clearInterval(typewriterTimer);
+            }, 18);
+
+            const choicesEl = document.getElementById('dialogue-choices');
+            choicesEl.innerHTML = '';
+            (cfg.choices || []).forEach((ch, idx) => {
+                const btn = document.createElement('button');
+                btn.style.animationDelay = `${idx * 90 + 120}ms`;
+                const isDisabled = !!ch.disabled;
+                btn.className = `animate-choice-pop w-full text-left p-3.5 rounded-xl border-2 text-xs sm:text-sm font-bold transition flex items-center justify-between gap-3 ${
+                    isDisabled
+                        ? 'bg-stone-100 border-stone-200 text-stone-400 cursor-not-allowed'
+                        : 'bg-white hover:bg-cardif-light border-cream-300 hover:border-cardif text-warm-brown shadow-sm'
+                }`;
+                btn.innerHTML = `
+                    <span>${ch.text}</span>
+                    <i class="ph-bold ${isDisabled ? 'ph-lock-key' : 'ph-caret-right text-cardif'} shrink-0"></i>
+                `;
+                if (!isDisabled) {
+                    btn.onclick = () => {
+                        closeDialogueModal();
+                        if (typeof ch.action === 'function') ch.action();
+                    };
+                }
+                choicesEl.appendChild(btn);
+            });
+        }
+
+        function closeDialogueModal() {
+            if (typewriterTimer) clearInterval(typewriterTimer);
+            const modal = document.getElementById('modal-dialogue');
+            modal.classList.add('hidden');
+            modal.classList.remove('flex');
+            gameState.isRolling = false;
+            renderMonopolyBoard();
+        }
+
+        function getDiscountMultiplier() {
+            if (gameState.luAffinity >= 75) return 0.85;
+            if (gameState.luAffinity < 45) return 1.10;
+            return 1.0;
+        }
+
+        function openInsuranceShop(fromTile = false) {
+            gameState.shopOpenedFromTile = fromTile;
+            const modal = document.getElementById('modal-shop');
+            document.getElementById('shop-lu-avatar').innerHTML = renderCharacterSVG('lu', gameState.luMood);
+            document.getElementById('shop-lu-affinity').textContent = gameState.luAffinity;
+            document.getElementById('shop-cash-display').textContent = formatMoney(gameState.cash);
+
+            const mult = getDiscountMultiplier();
+            const badge = document.getElementById('shop-discount-badge');
+            if (mult < 1) {
+                badge.textContent = '🎉 好感達標：全場保單享 85 折優惠！';
+                badge.className = 'px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800 text-[11px] font-bold';
+            } else if (mult > 1) {
+                badge.textContent = '⚠️ 好感偏低：需加收 10% 行政審核費';
+                badge.className = 'px-2 py-0.5 rounded-full bg-rose-100 text-rose-700 text-[11px] font-bold';
+            } else {
+                badge.textContent = '目前原價（陸修遠好感滿 75 享 85 折）';
+                badge.className = 'px-2 py-0.5 rounded-full bg-amber-100 text-amber-800 text-[11px] font-bold';
+            }
+
+            renderShopProducts();
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+        }
+
+        function renderShopProducts() {
+            const container = document.getElementById('shop-products-container');
+            const c = gameState.char;
+            const mult = getDiscountMultiplier();
+            const zeroCash = gameState.cash <= 0;
+
+            container.innerHTML = INSURANCE_PRODUCTS.map(p => {
+                const owned = hasPolicy(p.id);
+                const isRec = c.recommendedPolicyIds.includes(p.id);
+                const finalCost = Math.round(p.upfrontCost * mult);
+                const canAfford = !zeroCash && gameState.cash >= finalCost;
+
+                return `
+                    <div class="p-4 rounded-2xl bg-white border-2 ${isRec ? 'border-cardif shadow-sm' : 'border-cream-200'} flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                        <div class="space-y-1.5 flex-1">
+                            <div class="flex flex-wrap items-center gap-2">
+                                <span class="text-xs px-2.5 py-0.5 rounded-full bg-cardif-light text-cardif-dark font-bold">${p.badge}</span>
+                                ${isRec ? `<span class="text-xs px-2.5 py-0.5 rounded-full bg-amber-100 text-amber-800 font-bold">⭐ ${c.name} 階段強烈推薦</span>` : ''}
+                            </div>
+                            <h4 class="font-bold text-sm sm:text-base text-warm-brown">${p.name}</h4>
+                            <p class="text-xs text-stone-600 leading-relaxed">${p.desc}</p>
+                            <div class="flex flex-wrap items-center gap-3 text-xs text-stone-500 pt-1">
+                                <span>🛡️ 防護力：<strong class="text-cardif-dark">+${p.defenseScore}%</strong></span>
+                                <span>🔄 每圈續期保費：<strong>${formatMoney(p.perLapPremium)}</strong></span>
+                                ${p.accountValueAdd > 0 ? `<span>💎 立即計入保單帳戶價值：<strong class="text-emerald-700">+${formatMoney(p.accountValueAdd)}</strong></span>` : ''}
+                            </div>
+                        </div>
+
+                        <div class="sm:text-right shrink-0 flex sm:flex-col items-center sm:items-end justify-between gap-2 border-t sm:border-t-0 pt-2 sm:pt-0 border-cream-200">
+                            <div>
+                                <span class="text-[11px] text-stone-400 block">首期投保費用</span>
+                                <strong class="text-base font-bold ${canAfford || owned ? 'text-emerald-700' : 'text-rose-600'}">${formatMoney(finalCost)}</strong>
+                            </div>
+                            ${owned ? `
+                                <span class="px-4 py-2 rounded-xl bg-emerald-100 text-emerald-800 text-xs font-bold flex items-center gap-1">
+                                    <i class="ph-fill ph-check-circle"></i> 已生效守護中
+                                </span>
+                            ` : `
+                                <button onclick="buyInsurancePolicy('${p.id}')" ${!canAfford ? 'disabled' : ''}
+                                    class="px-4 py-2 rounded-xl text-xs font-bold transition ${
+                                        canAfford
+                                            ? 'bg-cardif hover:bg-cardif-dark text-white shadow-sm'
+                                            : 'bg-stone-100 text-stone-400 cursor-not-allowed'
+                                    }">
+                                    ${zeroCash ? '現金為 $0 無法購買' : (canAfford ? '立即投保並扣款' : '現金不足')}
+                                </button>
+                            `}
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function buyInsurancePolicy(policyId) {
+            if (gameState.cash <= 0) {
+                showNotificationModal('🚫 無法進行現金交易', '你目前的現金小於或等於 $0，根據財務守則不得進行任何現金購買活動！');
+                return;
+            }
+            const p = INSURANCE_PRODUCTS.find(item => item.id === policyId);
+            if (!p || hasPolicy(policyId)) return;
+
+            const cost = Math.round(p.upfrontCost * getDiscountMultiplier());
+            if (gameState.cash < cost) return;
+
+            gameState.cash -= cost;
+            gameState.policies.push(policyId);
+            gameState.policyValue += Math.round(p.accountValueAdd);
+            gameState.boughtInCurrentShopVisit = true;
+
+            modifyAffinity('lu', 10);
+            modifyAffinity('jiang', 6);
+            modifySan(8);
+
+            addLog(`🛡️ 成功投保【${p.name}】，扣除保費 ${formatMoney(cost)}，風險防護力提升至 ${getDefensePercentage()}%！`, 'good');
+            document.getElementById('shop-cash-display').textContent = formatMoney(gameState.cash);
+            document.getElementById('shop-lu-affinity').textContent = gameState.luAffinity;
+            renderShopProducts();
+            updateAllUI();
+        }
+
+        function dismissAdvisorAndLeaveShop() {
+            modifyAffinity('lu', -10);
+            if (getDefensePercentage() < 50) {
+                modifyAffinity('jiang', -6);
+            }
+            modifySan(-4);
+            addLog('⚠️ 你在理財中心拒絕了陸修遠的規劃建議，陸修遠好感度 -10。', 'bad');
+            gameState.shopOpenedFromTile = false;
+            closeInsuranceShop();
+        }
+
+        function closeInsuranceShop() {
+            if (gameState.shopOpenedFromTile && !gameState.boughtInCurrentShopVisit && getDefensePercentage() < 50) {
+                modifyAffinity('lu', -6);
+                addLog('💭 經過法巴理財中心卻未補強基礎保障，陸修遠替你捏了把冷汗 (好感 -6)。', 'info');
+            }
+            gameState.shopOpenedFromTile = false;
+            const modal = document.getElementById('modal-shop');
+            modal.classList.add('hidden');
+            modal.classList.remove('flex');
+            gameState.isRolling = false;
+            renderMonopolyBoard();
+        }
+
+        function openRepayDialog() {
+            const c = gameState.char;
+            if (!c) return;
+            const avail = Math.max(0, gameState.cash - 20000);
+            const opt = (amt) => {
+                const a = Math.min(amt, gameState.debt);
+                return {
+                    text: `提前還款 ${formatMoney(a)}（至少保留 $20,000 現金）`,
+                    disabled: a <= 0 || avail < a,
+                    action: () => {
+                        gameState.cash -= a;
+                        gameState.debt -= a;
+                        modifySan(Math.max(1, Math.ceil(a / 20000)));
+                        modifyAffinity('lu', 2);
+                        addLog(`🏦 提前償還 ${formatMoney(a)}，剩餘負債 ${formatMoney(gameState.debt)}。`, 'good');
+                        updateAllUI();
+                    }
+                };
+            };
+            const laps = gameState.debt > 0 ? Math.ceil(gameState.debt / c.debtPayment) : 0;
+            openDialogueModal({
+                category: '🏦 提前還款',
+                location: '法巴理財中心',
+                title: '要提前還一部分負債嗎？',
+                context: `目前負債 ${formatMoney(gameState.debt)}｜每圈固定還 ${formatMoney(c.debtPayment)}｜照目前速度約需 ${laps} 圈才還清`,
+                npc: 'lu',
+                npcMood: 'confident',
+                playerMood: gameState.playerMood,
+                speech: '先留一筆緊急預備金，其餘可以拿來降低負債，越早還壓力越小。',
+                choices: [opt(20000), opt(50000), { text: '先不還，繼續前進', action: () => {} }]
+            });
+        }
+
+        function triggerAdvisorConsult() {
+            const c = gameState.char;
+            openDialogueModal({
+                category: '📋 陸修遠的階段財務診斷',
+                location: '法巴線上顧問室',
+                title: `給 ${c.name}（${c.title}）的專屬建議`,
+                context: `當前現金：${formatMoney(gameState.cash)} ｜ 貸款總額：${formatMoney(gameState.debt)} ｜ 保單價值：${formatMoney(gameState.policyValue)}`,
+                npc: 'lu',
+                npcMood: 'confident',
+                playerMood: gameState.playerMood,
+                speech: `針對你的目標「${c.goal}」，建議優先確保已投保【${getRecommendedNames(c)}】。當風險防護力超過 80%，面對任何黑天鵝都能全身而退！`,
+                choices: [
+                    {
+                        text: '立即前往【法巴理財中心】檢視保單組合',
+                        action: () => openInsuranceShop(false)
+                    },
+                    {
+                        text: '謝謝修遠的建議，我知道了！',
+                        action: () => {}
+                    }
+                ]
+            });
+        }
+
+        function showEndingReport() {
+            const c = gameState.char;
+            const netWorth = gameState.cash + gameState.policyValue + (gameState.assetValue || 0) - gameState.debt;
+            const defPct = getDefensePercentage();
+            const avgAffinity = Math.round((gameState.luAffinity + gameState.jiangAffinity) / 2);
+
+            let grade = 'A';
+            let title = '平安落地，略有遺憾';
+            let subtitle = 'A 級結局 · 走過風雨的平凡人生';
+            let badgeClass = 'bg-sky-500 text-white';
+            let desc = `你安穩地迎來了人生結算階段。雖然旅途中曾遭遇突發波折，讓你動用了不少積蓄或錯失了陪伴家人的時光，但至少你守住了底線。生活平淡而真實，這已經是許多人羨慕的模樣。`;
+            let advice = `如果能更早將高風險部位轉入法國巴黎人壽的投資型保單或房貸壽險，不僅能讓資產穩健增值，也能給伴侶江禾滿滿的安全感，邁向 S 級歲月靜好！`;
+
+            if (netWorth > 0 && defPct >= 80 && gameState.luAffinity >= 65 && gameState.jiangAffinity >= 65 && gameState.san >= 60) {
+                grade = 'S';
+                title = '財務自由，歲月靜好';
+                subtitle = 'S 級完美結局 · 法巴保障護航的圓滿人生';
+                badgeClass = 'bg-gradient-to-br from-amber-400 to-cardif text-white';
+                desc = `你成功抵禦了人生的狂風暴雨！因為妥善運用了法國巴黎人壽的特色保單，黑天鵝意外不僅沒有擊垮你，反而讓${c.jiangRole}江禾更依賴與信任你。你們在陽光灑落的小屋安享歲月，陸修遠也成為了你們一生的摯友。`;
+                advice = `恭喜達成最高評級！你完美示範了「留愛不留債」與「攻守兼備」的智慧財務人生。`;
+            } else if (netWorth < 0 || gameState.san <= 20 || gameState.jiangAffinity <= 25) {
+                grade = 'F';
+                title = '風險爆雷，窮忙一生';
+                subtitle = 'F 級警惕結局 · 缺乏保障的骨牌效應';
+                badgeClass = 'bg-rose-600 text-white';
+                desc = `一步錯，步步錯。未規劃風險的代價是慘痛的，突如其來的意外與市場黑天鵝奪走了你的積蓄，沉重的貸款與醫療費壓得你喘不過氣，伴侶江禾也在無盡的焦慮與爭吵中心碎離去。`;
+                advice = `保險不是為了改變生活，而是為了防止生活被改變。再次體驗時，記得先到法巴理財中心聽取陸修遠的建議！`;
+            }
+
+            const badgeEl = document.getElementById('ending-grade-badge');
+            badgeEl.textContent = grade;
+            badgeEl.className = `mx-auto w-24 h-24 rounded-3xl flex items-center justify-center text-5xl font-bold shadow-lg my-3 ${badgeClass}`;
+
+            document.getElementById('ending-title').textContent = title;
+            document.getElementById('ending-subtitle').textContent = subtitle;
+            document.getElementById('ending-description').textContent = desc;
+            document.getElementById('ending-advice').textContent = advice;
+
+            const finalMood = grade === 'S' ? 'happy' : (grade === 'A' ? 'relieved' : 'crying');
+            document.getElementById('ending-player-avatar').innerHTML = renderCharacterSVG(c.id, finalMood);
+            document.getElementById('ending-jiang-avatar').innerHTML = renderCharacterSVG('jiang', finalMood);
+            document.getElementById('ending-lu-avatar').innerHTML = renderCharacterSVG('lu', grade === 'F' ? 'worried' : 'happy');
+
+            document.getElementById('ending-jiang-val').textContent = gameState.jiangAffinity;
+            document.getElementById('ending-lu-val').textContent = gameState.luAffinity;
+
+            document.getElementById('ending-networth').textContent = formatMoney(netWorth);
+            document.getElementById('ending-networth').className = `text-base sm:text-lg font-bold mt-1 block ${netWorth >= 0 ? 'text-emerald-700' : 'text-rose-600'}`;
+            document.getElementById('ending-defense').textContent = `${defPct}%`;
+            document.getElementById('ending-affinity').textContent = `${avgAffinity} 分`;
+
+            const modal = document.getElementById('modal-ending');
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+        }
+
+        function replaySameCharacter() {
+            document.getElementById('modal-ending').classList.add('hidden');
+            document.getElementById('modal-ending').classList.remove('flex');
+            if (gameState.char) {
+                startGameWithCharacter(gameState.char.id);
+            }
+        }
+
+        function resetToCharacterSelect() {
+            clearInterval(stepIntervalId);
+            document.getElementById("dice-overlay").classList.add("hidden");
+            document.getElementById('modal-ending').classList.add('hidden');
+            document.getElementById('modal-ending').classList.remove('flex');
+            document.getElementById('modal-dialogue').classList.add('hidden');
+            document.getElementById('modal-dialogue').classList.remove('flex');
+            document.getElementById('modal-shop').classList.add('hidden');
+            document.getElementById('modal-shop').classList.remove('flex');
+
+            document.getElementById('screen-game').classList.add('hidden');
+            document.getElementById('screen-select').classList.remove('hidden');
+            document.body.classList.remove('playing');
+            document.getElementById('btn-restart-top').classList.add('hidden');
+            document.getElementById('header-round-badge').classList.add('hidden');
+        }
+
+        function switchMobileView(tab) {
+            const pBoard = document.getElementById('panel-board');
+            const pChar = document.getElementById('panel-char');
+            const pCardif = document.getElementById('panel-cardif');
+
+            const bBoard = document.getElementById('tab-btn-board');
+            const bChar = document.getElementById('tab-btn-char');
+            const bCardif = document.getElementById('tab-btn-cardif');
+
+            [pBoard, pChar, pCardif].forEach(el => el.classList.add('hidden'));
+            [bBoard, bChar, bCardif].forEach(btn => {
+                btn.classList.remove('mobile-tab-active');
+                btn.classList.add('text-warm-brown');
+            });
+
+            if (tab === 'board') {
+                pBoard.classList.remove('hidden');
+                bBoard.classList.add('mobile-tab-active');
+                bBoard.classList.remove('text-warm-brown');
+            } else if (tab === 'char') {
+                pChar.classList.remove('hidden');
+                bChar.classList.add('mobile-tab-active');
+                bChar.classList.remove('text-warm-brown');
+            } else {
+                pCardif.classList.remove('hidden');
+                bCardif.classList.add('mobile-tab-active');
+                bCardif.classList.remove('text-warm-brown');
+            }
+        }
+
+        function openGuideModal() {
+            const m = document.getElementById('modal-guide');
+            m.classList.remove('hidden');
+            m.classList.add('flex');
+        }
+
+        function closeGuideModal() {
+            const m = document.getElementById('modal-guide');
+            m.classList.add('hidden');
+            m.classList.remove('flex');
+        }
+
+        window.onload = function () {
+            initGameUI();
+        };
+    </script>
+</body>
+</html>
